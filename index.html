@@ -8,8 +8,9 @@
 :root{
   --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --border:#dde1e7;
   --text:#1b1f24; --muted:#5d6672; --accent:#0b6bcb; --accent-soft:#e3effb;
-  --imm:#1f8a4c; --imm-soft:#e4f4ea; --warn:#a15c00; --warn-soft:#fdf1df;
+  --imm:#17794a; --imm-soft:#e4f4ea; --warn:#a15c00; --warn-soft:#fdf1df;
   --danger:#b3261e;
+  --s1:#2a78d6; --s2:#1baf7a; --s3:#eb6834; --s4:#6250d6; --s-neutral:#c9ced6;
   --shadow:0 1px 2px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
 }
 @media (prefers-color-scheme: dark){
@@ -17,27 +18,32 @@
     --bg:#0f1216; --surface:#171b21; --surface-2:#1f242c; --border:#2c333d;
     --text:#e7eaee; --muted:#9aa4b1; --accent:#5aa9f0; --accent-soft:#16283a;
     --imm:#4cc47f; --imm-soft:#14291d; --warn:#f0b25a; --warn-soft:#2e2414;
-    --danger:#f2867f; --shadow:none;
+    --danger:#f2867f; --s1:#3987e5; --s2:#199e70; --s3:#d95926; --s4:#9085e9; --s-neutral:#3a424d; --shadow:none;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0f1216; --surface:#171b21; --surface-2:#1f242c; --border:#2c333d;
   --text:#e7eaee; --muted:#9aa4b1; --accent:#5aa9f0; --accent-soft:#16283a;
   --imm:#4cc47f; --imm-soft:#14291d; --warn:#f0b25a; --warn-soft:#2e2414;
-  --danger:#f2867f; --shadow:none;
+  --danger:#f2867f; --s1:#3987e5; --s2:#199e70; --s3:#d95926; --s4:#9085e9; --s-neutral:#3a424d; --shadow:none;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 64px}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 16px 64px}
+header{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-end}
 header h1{font-size:24px;margin:0 0 4px}
-header p{margin:0;color:var(--muted);max-width:760px}
+header p{margin:0;color:var(--muted);max-width:720px}
+.vendor-pick{min-width:280px;flex:0 1 340px}
+.vendor-pick select{font-size:15px;font-weight:600;padding:9px 10px}
 h2{font-size:16px;margin:0 0 12px}
-h3{font-size:14px;margin:0 0 8px}
+h3{font-size:13px;margin:0 0 6px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
 .grid{display:grid;gap:16px}
 .section{margin-top:20px}
 .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .g-auto{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.g-wide{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 input,select{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font:inherit}
 input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
@@ -47,44 +53,95 @@ button.ghost{background:transparent}
 button.icon{padding:4px 9px;color:var(--danger)}
 .row-card{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;background:var(--surface-2)}
 .row-head{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
-.row-head .f-type{flex:2 1 220px}.row-head .f-size{flex:1 1 120px}
+.row-head .f-type{flex:2 1 220px}.row-head .f-size{flex:1 1 110px}
 .tips{font-size:12px;color:var(--muted);margin:8px 0 0;padding-left:18px}
 .tips li{margin:2px 0}
 .hint{font-size:12px;color:var(--muted)}
-.scen{border-top:4px solid var(--accent)}
-.scen.imm{border-top-color:var(--imm)}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.badge.imm{background:var(--imm-soft);color:var(--imm)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+/* executive dashboard */
+.exec{border-top:4px solid var(--accent)}
+.exec-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline;margin-bottom:12px}
+.exec-head h2{margin:0;font-size:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.kpi{background:var(--surface-2);border-radius:8px;padding:12px 14px}
+.kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:4px}
+.narr{margin:14px 0 0;padding:12px 14px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0}
+.chart{display:flex;align-items:flex-end;gap:14px;height:190px;padding:8px 4px 0;border-bottom:1px solid var(--border)}
+.cg{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;min-width:0}
+.cb{display:flex;gap:2px;align-items:flex-end;height:100%;width:100%;justify-content:center}
+.cb i{display:block;width:min(28px,40%);border-radius:4px 4px 0 0;min-height:2px;position:relative;cursor:default}
+.cb i:hover{filter:brightness(1.1)}
+.cg span{font-size:11px;color:var(--muted);margin-top:4px;white-space:nowrap}
+.cl{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text);white-space:nowrap;margin-bottom:2px;font-style:normal}
+.tip{position:fixed;pointer-events:none;background:var(--text);color:var(--surface);font-size:12px;padding:6px 9px;border-radius:6px;z-index:9;display:none;white-space:nowrap}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+/* scenario */
+.scen{border-top:4px solid var(--s1)}
+.scen.imm{border-top-color:var(--s2)}
 .big{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
-.scen .big{color:var(--accent)} .scen.imm .big{color:var(--imm)}
 .kv{display:grid;grid-template-columns:1fr auto;gap:2px 12px;margin-top:10px;font-variant-numeric:tabular-nums}
 .kv span:nth-child(odd){color:var(--muted)}
+.bar{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;display:flex;gap:2px}
+.bar i{display:block;height:100%}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 th,td{padding:7px 8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
+td.l,th.l{text-align:left;white-space:normal}
 th{font-size:12px;color:var(--muted);font-weight:600}
 tfoot td{font-weight:700}
+tr.sel td{background:var(--accent-soft)}
+tr.click{cursor:pointer}
+tr.opt td{color:var(--muted)}
 .scroll{overflow-x:auto}
-.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600}
-.badge.imm{background:var(--imm-soft);color:var(--imm)}
 .notes{margin:0;padding-left:18px}
 .notes li{margin:4px 0}
 .notes li.warn{color:var(--warn)}
-.bar{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;display:flex}
-.bar i{display:block;height:100%}
-.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
-.legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 details summary{cursor:pointer;font-weight:600}
 code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12px}
-@media (max-width:760px){.g2{grid-template-columns:1fr}.big{font-size:26px}}
-@media print{.toolbar,button{display:none}body{background:#fff}}
+@media (max-width:820px){.g2,.g3{grid-template-columns:1fr}.big{font-size:26px}}
+@media print{.toolbar,button,.no-print{display:none}body{background:#fff}.card{break-inside:avoid}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Backup Repository Calculator</h1>
-    <p>Hitung kapasitas repository backup untuk skenario <b>Non-Immutable</b> dan <b>Immutable</b> secara berdampingan. Pilih workload; parameter default diisi otomatis berdasarkan best practice masing-masing workload dan bisa diubah.</p>
+    <div>
+      <h1>Backup Repository Calculator</h1>
+      <p>Sizing kapasitas repository (Immutable vs Non-Immutable), resource server backup, dan lisensi, mengikuti best practice tiap vendor dan tiap workload.</p>
+    </div>
+    <div class="vendor-pick">
+      <label for="vendor">Brand / vendor backup</label>
+      <select id="vendor"></select>
+      <div class="hint" id="vendorDesc" style="margin-top:4px"></div>
+    </div>
   </header>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="card exec section" id="execCard">
+    <div class="exec-head">
+      <h2>Executive Summary</h2>
+      <span class="hint" id="execSub"></span>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <p class="narr" id="narr"></p>
+    <div class="grid g2 section">
+      <div>
+        <h3>Proyeksi kapasitas (termasuk buffer)</h3>
+        <div class="chart" id="chart"></div>
+        <div class="legend" id="chartLegend"></div>
+      </div>
+      <div>
+        <h3>Perbandingan vendor (input workload yang sama)</h3>
+        <div class="scroll"><table id="cmpTable"></table></div>
+        <p class="hint">Memakai target & asumsi default tiap vendor. Klik baris untuk berpindah vendor.</p>
+      </div>
+    </div>
+  </div>
 
   <div class="grid g2 section">
     <div class="card">
@@ -94,36 +151,24 @@ code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12p
         <div><label for="years">Proyeksi (tahun)</label><select id="years"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
         <div><label for="buffer">Free space buffer (%)</label><input id="buffer" type="number" min="0" max="100" step="1" value="20"></div>
         <div><label for="model">Pola perubahan data (GFS)</label><select id="model"><option value="hotspot">Realistis (hotspot)</option><option value="random">Konservatif (acak)</option></select></div>
+        <div><label for="win">Backup window harian (jam)</label><input id="win" type="number" min="1" step="1" value="8"></div>
+        <div><label for="fullWin">Window full / seeding (jam)</label><input id="fullWin" type="number" min="1" step="1" value="48"></div>
       </div>
-      <p class="hint">Buffer untuk ruang kerja synthetic full/merge, lonjakan perubahan data, dan agar filesystem tidak penuh (rekomendasi 15–25%).</p>
+      <p class="hint">Buffer default mengikuti rekomendasi vendor yang dipilih (bisa diubah). Backup window menentukan throughput, dan throughput menentukan jumlah proxy/node.</p>
     </div>
     <div class="card">
-      <h2>Repository</h2>
-      <div class="grid g-auto" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
-        <div><label for="nRepo"><span class="badge">Non-Immutable</span> Tipe repo</label>
-          <select id="nRepo">
-            <option value="refs">Windows ReFS (Fast Clone)</option>
-            <option value="xfs">Linux XFS reflink (Fast Clone)</option>
-            <option value="ntfs">NTFS / ext4 (tanpa Fast Clone)</option>
-          </select></div>
-        <div><label for="nMethod"><span class="badge">Non-Immutable</span> Metode backup</label>
-          <select id="nMethod">
-            <option value="ffi">Forever forward incremental</option>
-            <option value="synth" selected>Forward incr. + weekly synthetic full</option>
-            <option value="active">Forward incr. + weekly active full</option>
-          </select></div>
-        <div><label for="iRepo"><span class="badge imm">Immutable</span> Tipe repo</label>
-          <select id="iRepo">
-            <option value="hardened">Linux Hardened Repository (XFS)</option>
-            <option value="object">Object Storage (S3 Object Lock)</option>
-          </select></div>
+      <h2>Target Penyimpanan <span class="hint" id="vendorShort"></span></h2>
+      <div class="grid g-wide">
+        <div><label for="nTarget"><span class="badge">Non-Immutable</span> Target</label><select id="nTarget"></select></div>
+        <div id="nMethodWrap"><label for="nMethod"><span class="badge">Non-Immutable</span> Metode backup</label>
+          <select id="nMethod"><option value="ffi">Forever forward incremental</option><option value="synth" selected>Forward incr. + weekly synthetic full</option><option value="active">Forward incr. + weekly active full</option></select></div>
+        <div><label for="iTarget"><span class="badge imm">Immutable</span> Target</label><select id="iTarget"></select></div>
         <div id="iMethodWrap"><label for="iMethod"><span class="badge imm">Immutable</span> Metode backup</label>
-          <select id="iMethod">
-            <option value="synth">Forward incr. + weekly synthetic full</option>
-            <option value="active">Forward incr. + weekly active full</option>
-          </select></div>
+          <select id="iMethod"><option value="synth">Forward incr. + weekly synthetic full</option><option value="active">Forward incr. + weekly active full</option></select></div>
         <div><label for="immut"><span class="badge imm">Immutable</span> Periode immutability (hari)</label><input id="immut" type="number" min="1" step="1" value="30"></div>
+        <div><label for="gain">Global dedup tambahan vendor (%)</label><input id="gain" type="number" min="0" max="90" step="1" value="0"></div>
       </div>
+      <div id="hwWrap" class="section" style="margin-top:14px"></div>
     </div>
   </div>
 
@@ -133,7 +178,7 @@ code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12p
       <div style="display:flex;gap:8px"><button class="ghost" id="reset">Reset</button><button class="primary" id="add">+ Tambah workload</button></div>
     </div>
     <div id="rows"></div>
-    <p class="hint">Data reduction = gabungan kompresi + deduplikasi inline backup (50% ≈ rasio 2:1). Change rate = persentase data sumber yang berubah per hari. Log/hari hanya untuk database (transaction/archive log).</p>
+    <p class="hint">Data reduction = kompresi + dedup per job (50% ≈ 2:1). "Global dedup tambahan vendor" adalah penghematan ekstra dari dedup global lintas workload pada platform dedup (Commvault, Rubrik, Cohesity, Data Domain, dan lainnya). Jumlah objek dipakai untuk sizing server dan lisensi per instance/user.</p>
   </div>
 
   <div class="grid g2 section" id="summary"></div>
@@ -148,26 +193,48 @@ code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12p
     <div class="scroll"><table id="detailTable"></table></div>
   </div>
 
+  <div class="card section">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <h2 style="margin:0">Resource Server Backup <span class="hint" id="resSub"></span></h2>
+      <div style="min-width:220px"><label for="basis">Basis sizing</label><select id="basis"><option value="imm">Skenario Immutable</option><option value="n">Skenario Non-Immutable</option></select></div>
+    </div>
+    <div class="scroll"><table id="resTable"></table></div>
+    <p class="hint" id="resHint"></p>
+  </div>
+
+  <div class="card section">
+    <h2>Kebutuhan Lisensi <span class="hint" id="licSub"></span></h2>
+    <div class="scroll"><table id="licTable"></table></div>
+    <p class="hint">Metrik lisensi mengikuti model umum tiap vendor; harga, edisi, dan bundling bisa berbeda per kontrak/distributor. Konfirmasi ke vendor atau partner resmi sebelum pengadaan.</p>
+  </div>
+
   <div class="grid g2 section">
-    <div class="card"><h2>Catatan &amp; Rekomendasi</h2><ul class="notes" id="notes"></ul></div>
+    <div class="card"><h2>Catatan &amp; Best Practice</h2><ul class="notes" id="notes"></ul></div>
     <div class="card">
       <h2>Metodologi</h2>
-      <details open><summary>Rumus yang dipakai</summary>
+      <details open><summary>Rumus kapasitas</summary>
         <ul class="notes">
-          <li><code>S</code> = ukuran sumber × (1 + growth)<sup>tahun</sup></li>
-          <li>Full <code>F</code> = S × (1 − data reduction); Incremental <code>I</code> = F × change rate</li>
-          <li>Jumlah restore point harian yang tersimpan (<code>P</code>):
-            <br>• Forever forward incremental: retensi + 1 (titik merge)
-            <br>• Forward incr. dengan weekly full: retensi + 6 (chain lama baru bisa dihapus setelah full berikutnya cukup tua)
-            <br>• Hardened repo: max(retensi, immutability) + 7
-            <br>• Object storage: max(retensi, immutability) + 10 hari block generation</li>
-          <li>Short-term: dengan Fast Clone + synthetic full = F + (P − 1) × I + (K − 1) × 1% F (metadata); tanpa Fast Clone / active full = K × F + (P − K) × I, dengan K = jumlah full dalam jendela = ⌈P / 7⌉. Forever incremental = F + (P − 1) × I.</li>
-          <li>GFS (weekly/monthly/yearly) di luar jendela short-term disusun sebagai timeline restore point. Dengan Fast Clone/object storage, tiap titik menyimpan blok unik terhadap titik sebelumnya: <code>F × (1 − (1 − d)<sup>√N</sup>)</code> (realistis/hotspot) atau <code>F × (1 − (1 − d)<sup>N</sup>)</code> (konservatif/acak), N = jarak hari. Tanpa Fast Clone atau dengan active full = F per titik.</li>
-          <li>Log database = S × log% × (1 − reduction) × P.</li>
-          <li>Kebutuhan = total × (1 + buffer).</li>
+          <li><code>S</code> = ukuran sumber × (1 + growth)<sup>tahun</sup>; <code>g</code> = global dedup vendor</li>
+          <li>Full <code>F</code> = S × (1 − reduction) × (1 − g); incremental <code>I</code> = S × (1 − reduction) × (1 − g/2) × change rate</li>
+          <li>Restore point harian tersimpan <code>P</code> menurut tipe target:
+            <br>• Block repo, forever incremental: retensi + 1; dengan weekly full: retensi + 6
+            <br>• Veeam Hardened Repository: max(retensi, immutability) + 7
+            <br>• Object storage Object Lock (block generation): max(retensi, immutability) + 10
+            <br>• Platform dedup tanpa lock: retensi + 1; dengan retention lock/WORM: max(retensi, immutability) + 1
+            <br>• Commvault cloud WORM (DDB seal): 2 × max(retensi, immutability)</li>
+          <li>Short-term: forever incremental / Fast Clone + synthetic = F + (P − 1) × I (+1% F metadata per synthetic full); tanpa Fast Clone / active full = K × F + (P − K) × I, K = ⌈P / 7⌉.</li>
+          <li>GFS di luar jendela harian disusun sebagai timeline; tiap titik menyimpan blok unik terhadap titik sebelumnya: <code>Fc × (1 − (1 − d)<sup>√N</sup>)</code> (realistis) atau <code>(1 − d)<sup>N</sup></code> (konservatif). Tanpa Fast Clone / active full = F per titik.</li>
+          <li>Log database = S × log% × (1 − reduction) × (1 − g/2) × P. Kebutuhan = total × (1 + buffer).</li>
         </ul>
       </details>
-      <p class="hint">Mode "Realistis" mengasumsikan perubahan harian sebagian besar menimpa blok yang sama (hotspot), sehingga perubahan kumulatif tumbuh sublinear. Mode "Konservatif" mengasumsikan perubahan blok acak dan memberi angka batas atas. Validasi dengan data change rate riil dari monitoring (mis. Veeam ONE) bila tersedia.</p>
+      <details><summary>Rumus resource &amp; lisensi</summary>
+        <ul class="notes">
+          <li>Throughput = max(data berubah harian ÷ backup window, total data ÷ window full). Throughput dibagi kapasitas per task/node/engine menghasilkan jumlah proxy, MediaAgent, atau node.</li>
+          <li>Server manajemen (VBR, CommServe, PPDM, HYCU, IBM SP) dipilih per tier berdasarkan jumlah objek atau ingest harian.</li>
+          <li>Lisensi kapasitas (FETB) = total data sumber pada tahun proyeksi, di luar Microsoft 365 (dihitung per user).</li>
+        </ul>
+      </details>
+      <p class="hint">Semua rasio dan sizing adalah angka perencanaan berbasis guideline publik vendor yang dibulatkan. Validasi dengan sizing tool resmi vendor dan data change rate riil sebelum pengadaan.</p>
     </div>
   </div>
 
@@ -176,63 +243,260 @@ code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12p
     <button id="print">Cetak / PDF</button>
   </div>
 </div>
+<div class="tip" id="tip"></div>
 
 <script>
+/* ================= WORKLOAD PROFILES ================= */
 const WORKLOADS = {
-  vmware:{name:'VMware vSphere VM',change:5,red:50,log:0,ret:14,w:4,m:12,y:1,
-    tips:['Gunakan CBT + application-aware processing untuk VM aplikasi.','RPO harian; VM kritikal bisa 4–12 jam (replica/CDP).','Backup copy offsite untuk aturan 3-2-1-1-0.']},
-  hyperv:{name:'Microsoft Hyper-V VM',change:5,red:50,log:0,ret:14,w:4,m:12,y:1,
+  vmware:{name:'VMware vSphere VM',unit:'VM',cls:'vm',cnt:100,change:5,red:50,log:0,ret:14,w:4,m:12,y:1,
+    tips:['CBT + application-aware processing untuk VM aplikasi.','RPO harian; VM kritikal 4–12 jam (replica/CDP).','Backup copy offsite untuk aturan 3-2-1-1-0.']},
+  hyperv:{name:'Microsoft Hyper-V VM',unit:'VM',cls:'vm',cnt:100,change:5,red:50,log:0,ret:14,w:4,m:12,y:1,
     tips:['Gunakan RCT (Resilient Change Tracking) Hyper-V 2016+.','Application-aware processing untuk VM berbasis VSS.']},
-  physical:{name:'Physical Server (Agent Win/Linux)',change:3,red:50,log:0,ret:14,w:4,m:12,y:0,
-    tips:['Gunakan agent mode Server, volume-level backup.','Change rate server fisik umumnya lebih rendah dari VM aplikasi.']},
-  mssql:{name:'Microsoft SQL Server',change:10,red:60,log:5,ret:14,w:4,m:12,y:3,
-    tips:['Transaction log backup tiap 15 menit (recovery model FULL).','Database terkompresi baik (kecuali TDE/backup compression aktif → turunkan reduction).','Retensi log mengikuti retensi image.']},
-  oracle:{name:'Oracle Database (RMAN)',change:10,red:60,log:8,ret:14,w:4,m:12,y:1,
-    tips:['Archive log backup tiap 15–30 menit.','Aktifkan block change tracking (BCT) untuk incremental level 1.','Jika TDE aktif, data reduction mendekati 0%.']},
-  hana:{name:'SAP HANA (Backint)',change:15,red:40,log:10,ret:14,w:4,m:12,y:1,
-    tips:['Log backup interval default 15 menit.','Data HANA sudah terkompresi kolumnar → reduction lebih rendah.','Full/delta harian sesuai rekomendasi SAP.']},
-  exchange:{name:'Microsoft Exchange (on-prem)',change:4,red:40,log:3,ret:14,w:4,m:12,y:1,
+  physical:{name:'Physical Server (Agent Win/Linux)',unit:'server',cls:'server',cnt:20,change:3,red:50,log:0,ret:14,w:4,m:12,y:0,
+    tips:['Agent mode server, backup level volume.','Change rate server fisik umumnya lebih rendah dari VM aplikasi.']},
+  mssql:{name:'Microsoft SQL Server',unit:'server DB',cls:'db',cnt:10,change:10,red:60,log:5,ret:14,w:4,m:12,y:3,
+    tips:['Transaction log backup tiap 15 menit (recovery model FULL).','Jika TDE/backup compression aktif, turunkan data reduction.']},
+  oracle:{name:'Oracle Database (RMAN)',unit:'server DB',cls:'db',cnt:5,change:10,red:60,log:8,ret:14,w:4,m:12,y:1,
+    tips:['Archive log backup tiap 15–30 menit.','Aktifkan block change tracking (BCT).','Jika TDE aktif, data reduction mendekati 0%.']},
+  hana:{name:'SAP HANA (Backint)',unit:'server DB',cls:'db',cnt:2,change:15,red:40,log:10,ret:14,w:4,m:12,y:1,
+    tips:['Log backup interval default 15 menit.','Data HANA sudah terkompresi kolumnar, jadi reduction lebih rendah.']},
+  exchange:{name:'Microsoft Exchange (on-prem)',unit:'server',cls:'app',cnt:4,change:4,red:40,log:3,ret:14,w:4,m:12,y:1,
     tips:['Application-aware processing dengan log truncation.','Pertimbangkan DAG passive copy sebagai sumber backup.']},
-  file:{name:'File Server / NAS (SMB/NFS)',change:2,red:30,log:0,ret:30,w:4,m:12,y:7,
-    tips:['Retensi panjang untuk kebutuhan audit/compliance (5–7 tahun).','File media/arsip terkompresi → reduction rendah.','Gunakan NAS backup dengan changed file tracking.']},
-  m365:{name:'Microsoft 365 (Exchange/SP/OneDrive)',change:1,red:30,log:0,ret:30,w:0,m:12,y:3,
-    tips:['Backup 2–4× sehari; retensi berbasis item sering 3–7 tahun.','Object storage dengan immutability direkomendasikan.']},
-  k8s:{name:'Kubernetes (Persistent Volume)',change:5,red:50,log:0,ret:7,w:4,m:6,y:0,
-    tips:['Backup namespace + PV snapshot, export ke repository eksternal.','Gunakan immutability pada export location (object lock).']},
-  vdi:{name:'VDI (Persistent Desktop)',change:8,red:60,log:0,ret:7,w:4,m:3,y:0,
-    tips:['Non-persistent desktop cukup backup golden image & profile.','Change rate tinggi karena update OS/aplikasi.']},
-  custom:{name:'Custom',change:5,red:50,log:0,ret:14,w:4,m:12,y:1,tips:['Isi parameter sesuai hasil assessment.']}
+  file:{name:'File Server / NAS (SMB/NFS)',unit:'share',cls:'nas',cnt:2,change:2,red:30,log:0,ret:30,w:4,m:12,y:7,
+    tips:['Retensi panjang untuk audit/compliance (5–7 tahun).','File media/arsip sudah terkompresi, jadi reduction rendah.','Lisensi NAS umumnya per kapasitas (TB).']},
+  m365:{name:'Microsoft 365 (Exchange/SP/OneDrive)',unit:'user',cls:'m365',cnt:500,change:1,red:30,log:0,ret:30,w:0,m:12,y:3,
+    tips:['Backup 2–4× sehari; retensi item 3–7 tahun.','Lisensi per user; banyak vendor menawarkan opsi SaaS.']},
+  k8s:{name:'Kubernetes (Persistent Volume)',unit:'worker node',cls:'k8s',cnt:6,change:5,red:50,log:0,ret:7,w:4,m:6,y:0,
+    tips:['Backup namespace + PV snapshot, export ke repository eksternal.','Aktifkan immutability pada export location.']},
+  vdi:{name:'VDI (Persistent Desktop)',unit:'desktop',cls:'vm',cnt:200,change:8,red:60,log:0,ret:7,w:4,m:3,y:0,
+    tips:['Non-persistent desktop cukup backup golden image & profile.']},
+  custom:{name:'Custom',unit:'objek',cls:'server',cnt:10,change:5,red:50,log:0,ret:14,w:4,m:12,y:1,tips:['Isi parameter sesuai hasil assessment.']}
 };
 const FIELDS=[['change','Change rate/hari (%)',0.1],['red','Data reduction (%)',1],['log','Log/hari (% DB)',0.5],['ret','Retensi harian (hari)',1],['w','Weekly GFS',1],['m','Monthly GFS',1],['y','Yearly GFS',1]];
-const $=id=>document.getElementById(id);
-const STORE='brc-state-v1';
-let rows=[];
-let uid=0;
 
-function newRow(type='vmware',size=10){const d=WORKLOADS[type];return {id:++uid,type,size,change:d.change,red:d.red,log:d.log,ret:d.ret,w:d.w,m:d.m,y:d.y};}
-function defaults(){rows=[newRow('vmware',20),newRow('mssql',5),newRow('file',10)];}
+/* ================= VENDOR PROFILES ================= */
+const T=(id,label,mode,rule,fastClone=false)=>({id,label,mode,rule,fastClone});
+const tier=(list,val)=>list.find(t=>val<=t.max)||list[list.length-1];
+const ceil=Math.ceil, max=Math.max, min=Math.min;
+
+const VENDORS={
+  veeam:{name:'Veeam Data Platform',short:'Veeam',arch:'Software-defined: VBR server, proxy, dan repository di storage umum (ReFS/XFS/Hardened Linux/object).',
+    gain:0,buffer:20,methods:true,
+    nT:[T('refs','Windows ReFS (Fast Clone)','chain','chain',true),T('xfs','Linux XFS reflink (Fast Clone)','chain','chain',true),T('ntfs','NTFS / ext4 (tanpa Fast Clone)','chain','chain',false)],
+    iT:[T('hardened','Linux Hardened Repository (XFS)','chain','hardened',true),T('object','Object Storage (S3 Object Lock)','forever','object')],
+    hw:{taskMBps:['Throughput per task proxy (MB/s)',100],repoMaxTB:['Maks kapasitas per repository server (TB)',400]},
+    resources(c){
+      const tasks=max(1,ceil(c.mbps/c.hw.taskMBps)); const R=[];
+      const vbr=tier([{max:500,c:4,r:16},{max:2000,c:8,r:32},{max:5000,c:16,r:64},{max:1e12,c:24,r:96}],c.objects);
+      R.push({role:'Veeam Backup & Replication server',qty:1,vcpu:vbr.c,ram:vbr.r,disk:'OS 100 GB + config DB PostgreSQL',note:`Tier untuk ${c.objects} objek`});
+      if(c.cls.vm>0){const q=max(1,ceil(tasks/8)),cp=min(8,max(2,ceil(tasks/q)));
+        R.push({role:'Backup proxy (VMware/Hyper-V)',qty:q,vcpu:cp,ram:cp*2+4,disk:'OS 60 GB',note:`${tasks} concurrent task total (1 task = 1 core + 2 GB RAM)`});}
+      if(c.target.id==='object'){const q=max(1,ceil(tasks/24)),cp=max(4,ceil(tasks/3/q));
+        R.push({role:'Gateway server (object storage)',qty:q,vcpu:cp,ram:max(16,cp*4),disk:'OS 100 GB',note:'1 core + 4 GB RAM per 3 task'});
+        R.push({role:'Object storage S3 (Object Lock)',qty:1,storage:true,disk:fmt(c.cap)+' usable',note:'On-prem S3 atau cloud; aktifkan versioning + Object Lock'});}
+      else{const q=max(1,ceil(c.cap/c.hw.repoMaxTB)),cp=max(4,ceil(tasks/3/q));
+        R.push({role:c.target.rule==='hardened'?'Linux Hardened Repository server':'Repository server',qty:q,vcpu:cp,ram:max(16,cp*4),disk:fmt(c.cap/q)+' usable / server',note:'1 core + 4 GB RAM per 3 task; gabungkan dalam SOBR'});}
+      if(c.cls.m365>0){const q=max(1,ceil(c.cls.m365/5000));R.push({role:'Veeam Backup for M365 (controller + proxy)',qty:q,vcpu:8,ram:32,disk:'OS 100 GB',note:'±5.000 user per proxy; repository ke object storage'});}
+      if(c.cls.k8s>0) R.push({role:'Veeam Kasten (di dalam cluster K8s)',qty:1,vcpu:'–',ram:'–',disk:'PVC ±50 GB',note:'Berjalan sebagai aplikasi di cluster; tanpa server tambahan',storage:true});
+      R.push({role:'Veeam ONE (monitoring, edisi Advanced+)',qty:1,vcpu:4,ram:16,disk:'100 GB',note:'Disarankan untuk alarm ransomware & capacity planning',opt:true});
+      return R;},
+    license(c){const L=[];
+      const inst=c.cls.vm+c.cls.server+c.cls.db+c.cls.app;const nasInst=ceil(c.tb.nas*2);
+      L.push({item:'Veeam Data Platform (Universal License)',qty:inst+nasInst,unit:'instance',note:`${inst} VM/server/DB + ${nasInst} instance NAS (1 instance per 500 GB). Edisi Foundation minimum; Advanced disarankan (Veeam ONE).`});
+      if(c.cls.m365) L.push({item:'Veeam Backup for Microsoft 365',qty:c.cls.m365,unit:'user',note:'Subscription per user'});
+      if(c.cls.k8s) L.push({item:'Veeam Kasten for Kubernetes',qty:c.cls.k8s,unit:'worker node',note:'Per node'});
+      return L;},
+    notes:['Hardened Repository mewajibkan forward incremental dengan periodic full; forever forward & reverse incremental tidak didukung.','Gunakan XFS reflink/ReFS agar synthetic full & GFS hemat ruang (Fast Clone).','Hardened repo: SSH nonaktif, single-use credential, tidak join domain, idealnya server fisik.','Uji restore otomatis dengan SureBackup.']},
+
+  commvault:{name:'Commvault Cloud',short:'Commvault',m365Saas:true,arch:'CommServe + MediaAgent dengan deduplication database (DDB) global; opsi HyperScale X dan Commvault Cloud Air Gap Protect.',
+    gain:25,buffer:20,
+    nT:[T('cvdisk','Disk library + dedup (MediaAgent)','forever','dedup')],
+    iT:[T('cvhsx','HyperScale X / Hardened MediaAgent (WORM)','forever','lock'),T('cvcloud','Cloud storage S3 Object Lock (WORM, DDB seal)','forever','worm2x')],
+    hw:{maMBps:['Throughput per MediaAgent (MB/s)',1000],vsaMBps:['Throughput per VSA access node (MB/s)',500]},
+    resources(c){const R=[];
+      const cs=tier([{max:500,c:4,r:24,n:'Small'},{max:2500,c:8,r:32,n:'Medium'},{max:10000,c:12,r:64,n:'Large'},{max:1e12,c:16,r:128,n:'Extra Large'}],c.objects);
+      R.push({role:`CommServe (${cs.n})`,qty:1,vcpu:cs.c,ram:cs.r,disk:'OS 150 GB + SQL DB SSD',note:`Tier untuk ${c.objects} client`});
+      const MA=[{max:50,c:4,r:24,d:'DDB 400 GB SSD',n:'Small'},{max:150,c:8,r:32,d:'DDB 600 GB SSD',n:'Medium'},{max:250,c:12,r:64,d:'DDB 1.2 TB NVMe',n:'Large'},{max:500,c:16,r:128,d:'DDB 2 × 1.2 TB NVMe',n:'Extra Large'}];
+      const qCap=ceil(c.cap/500),qTp=ceil(c.mbps/c.hw.maMBps),q=max(1,qCap,qTp);const t=tier(MA,c.cap/q);
+      R.push({role:`MediaAgent (${t.n})`,qty:q,vcpu:t.c,ram:t.r,disk:`${t.d} + index cache; ${fmt(c.cap/q)} back-end / MA`,note:c.target.id==='cvhsx'?'Atau HyperScale X min. 3 node':'Maks ±500 TB back-end per MediaAgent'});
+      if(c.target.id==='cvcloud') R.push({role:'Cloud library S3 (Object Lock)',qty:1,storage:true,disk:fmt(c.cap)+' usable',note:'Bucket WORM; perhitungkan biaya API/egress'});
+      if(c.cls.vm>0){const q2=max(1,ceil(c.mbps/c.hw.vsaMBps));R.push({role:'VSA access node (hypervisor)',qty:q2,vcpu:8,ram:16,disk:'OS 100 GB',note:'Bisa digabung dengan MediaAgent di lingkungan kecil'});}
+      if(c.cls.m365) R.push({role:'Commvault Cloud for M365 (SaaS)',qty:1,storage:true,disk:'Dikelola SaaS',note:'Tanpa server on-prem'});
+      return R;},
+    license(c){const L=[];
+      L.push({item:'Commvault Cloud Backup & Recovery',qty:ceil(c.fetb),unit:'FETB',note:'Front-end TB; alternatif lisensi per VM/instance tersedia'});
+      if(c.cls.m365) L.push({item:'Commvault Cloud for Microsoft 365',qty:c.cls.m365,unit:'user',note:'SaaS per user'});
+      if(c.target.id==='cvhsx') L.push({item:'HyperScale X appliance / reference architecture',qty:'min. 3',unit:'node',note:'Hardware terpisah dari lisensi software'});
+      return L;},
+    notes:['DDB wajib di SSD/NVMe; ukuran DDB mengikuti back-end TB.','WORM pada cloud storage dedup mengunci data hingga ±2× retensi karena DDB di-seal berkala (sudah dihitung).','Aktifkan Commvault Threat Scan & anomaly detection.','Pertimbangkan Air Gap Protect (cloud vault terkelola) sebagai salinan immutable ketiga.']},
+
+  rubrik:{name:'Rubrik Security Cloud',short:'Rubrik',m365Saas:true,arch:'Scale-out appliance (Brik) dengan filesystem Atlas yang immutable; manajemen via Rubrik Security Cloud (SaaS).',
+    gain:20,buffer:25,
+    nT:[T('rbk','Rubrik cluster (tanpa Retention Lock)','forever','dedup')],
+    iT:[T('rbkl','Rubrik cluster + Retention Lock','forever','lock'),T('rbkcv','Rubrik Cloud Vault (air-gapped)','forever','lock')],
+    hw:{nodeTB:['Kapasitas usable per node (TB)',30],nodeMBps:['Ingest per node (MB/s)',400],minNodes:['Minimum node per cluster',4]},
+    resources(c){const R=[];
+      const n=max(c.hw.minNodes,ceil(c.cap/c.hw.nodeTB),ceil(c.mbps/c.hw.nodeMBps));
+      R.push({role:'Rubrik appliance node',qty:n,appliance:true,disk:`${fmt(n*c.hw.nodeTB)} usable cluster`,note:`Kapasitas: ${ceil(c.cap/c.hw.nodeTB)} node, throughput: ${ceil(c.mbps/c.hw.nodeMBps)} node, minimum ${c.hw.minNodes}`});
+      R.push({role:'Rubrik Security Cloud (manajemen SaaS)',qty:1,storage:true,disk:'SaaS',note:'Tanpa server manajemen on-prem'});
+      if(c.target.id==='rbkcv') R.push({role:'Rubrik Cloud Vault',qty:1,storage:true,disk:fmt(c.cap),note:'Salinan air-gapped terkelola'});
+      if(c.cls.m365) R.push({role:'Rubrik M365 Protection (SaaS)',qty:1,storage:true,disk:'Dikelola SaaS',note:'Tanpa server on-prem'});
+      return R;},
+    license(c){const L=[];
+      L.push({item:'Rubrik Security Cloud (Enterprise Edition)',qty:ceil(c.fetb),unit:'FETB',note:'Termasuk anomaly detection & threat monitoring (sesuai edisi)'});
+      if(c.cls.m365) L.push({item:'Rubrik M365 Protection',qty:c.cls.m365,unit:'user',note:'Per user'});
+      L.push({item:'Hardware Rubrik node',qty:c.nodes||'–',unit:'node',note:'Atau certified hardware (Cisco/HPE/Dell/Lenovo)'});
+      return L;},
+    notes:['Filesystem Atlas immutable secara native; Retention Lock membuat data tidak bisa dihapus bahkan oleh admin (mode compliance).','Jaga utilisasi cluster di bawah 80%.','Gunakan SLA Domain untuk menyatukan RPO, retensi, dan archival.','Cloud Vault/archive ke object storage untuk salinan offsite.']},
+
+  cohesity:{name:'Cohesity DataProtect',short:'Cohesity',m365Saas:true,arch:'Scale-out hyperconverged (SpanFS) dengan dedup global & erasure coding; manajemen Helios (SaaS). NetBackup kini bagian dari Cohesity.',
+    gain:25,buffer:25,
+    nT:[T('coh','Cohesity cluster (tanpa DataLock)','forever','dedup')],
+    iT:[T('cohl','Cohesity cluster + DataLock (WORM)','forever','lock'),T('fk','Cohesity FortKnox (cyber vault SaaS)','forever','lock')],
+    hw:{nodeTB:['Kapasitas usable per node (TB, setelah EC)',40],nodeMBps:['Ingest per node (MB/s)',500],minNodes:['Minimum node per cluster',3],nPlus:['Node cadangan (N+x)',1]},
+    resources(c){const R=[];
+      const base=max(c.hw.minNodes,ceil(c.cap/c.hw.nodeTB),ceil(c.mbps/c.hw.nodeMBps)),n=base+c.hw.nPlus;
+      R.push({role:'Cohesity node',qty:n,appliance:true,disk:`${fmt(n*c.hw.nodeTB)} usable cluster`,note:`${base} node + ${c.hw.nPlus} cadangan (toleransi kegagalan node)`});
+      R.push({role:'Cohesity Helios (manajemen SaaS)',qty:1,storage:true,disk:'SaaS',note:'Atau Helios on-prem'});
+      if(c.target.id==='fk') R.push({role:'Cohesity FortKnox',qty:1,storage:true,disk:fmt(c.cap),note:'Vault air-gapped terkelola'});
+      if(c.cls.m365) R.push({role:'DataProtect as a Service (M365)',qty:1,storage:true,disk:'Dikelola SaaS',note:'Tanpa server on-prem'});
+      return R;},
+    license(c){const L=[];
+      L.push({item:'Cohesity DataProtect',qty:ceil(c.fetb),unit:'FETB',note:'Front-end TB; DataHawk (threat detection) opsional'});
+      if(c.cls.m365) L.push({item:'Cohesity DataProtect as a Service – M365',qty:c.cls.m365,unit:'user',note:'Per user'});
+      L.push({item:'Hardware Cohesity node',qty:c.nodes||'–',unit:'node',note:'Appliance Cohesity atau certified hardware'});
+      return L;},
+    notes:['DataLock (WORM) mode compliance mencegah penghapusan sebelum periode berakhir.','Sizing menyertakan node cadangan (N+1) agar tetap terlindungi saat node gagal.','Jaga utilisasi di bawah 80% untuk rebalancing & erasure coding.','FortKnox menyediakan salinan immutable terisolasi (3-2-1-1-0).']},
+
+  dell:{name:'Dell PowerProtect Data Manager + Data Domain',short:'Dell',m365Saas:true,arch:'PowerProtect Data Manager (PPDM) + appliance PowerProtect DD dengan DD Boost & dedup variable-length.',
+    gain:35,buffer:20,
+    nT:[T('dd','PowerProtect DD (tanpa Retention Lock)','forever','dedup')],
+    iT:[T('ddrl','PowerProtect DD + Retention Lock Compliance','forever','lock'),T('ddcr','PowerProtect Cyber Recovery vault (DD)','forever','lock')],
+    hw:{engMBps:['Throughput per protection engine (MB/s)',500]},
+    resources(c){const R=[];
+      const pp=c.objects<=1000?{c:10,r:24}:c.objects<=5000?{c:16,r:48}:{c:24,r:64};
+      R.push({role:'PowerProtect Data Manager (VM)',qty:1,vcpu:pp.c,ram:pp.r,disk:'±500 GB (OVA)',note:`Tier untuk ${c.objects} aset`});
+      if(c.cls.vm>0){const q=max(1,ceil(c.mbps/c.hw.engMBps));R.push({role:'VM Direct protection engine',qty:q,vcpu:4,ram:8,disk:'OS 50 GB',note:'Transport hot-add/NBD ke DD Boost'});}
+      const DD=[{m:'DD3300',tb:32},{m:'DD6400',tb:172},{m:'DD6900',tb:288},{m:'DD9400',tb:768},{m:'DD9900',tb:1500}];
+      let pick=DD.find(d=>d.tb>=c.cap),q=1; if(!pick){pick=DD[DD.length-1];q=ceil(c.cap/pick.tb);}
+      R.push({role:`PowerProtect ${pick.m}`,qty:q,appliance:true,disk:`${fmt(c.cap)} dibutuhkan (maks ±${pick.tb} TB usable/unit)`,note:'Kapasitas maks model adalah perkiraan; cek datasheet & ekspansi shelf'});
+      if(c.target.id==='ddcr') R.push({role:'Cyber Recovery vault DD (air-gapped)',qty:1,appliance:true,disk:'Setara salinan kritikal',note:'Vault terisolasi + CyberSense opsional'});
+      if(c.cls.m365) R.push({role:'PowerProtect Backup Service (M365)',qty:1,storage:true,disk:'Dikelola SaaS',note:'Tanpa server on-prem'});
+      return R;},
+    license(c){const L=[];
+      L.push({item:'PowerProtect Data Manager',qty:ceil(c.fetb),unit:'FETB',note:'Capacity license front-end; alternatif per socket'});
+      L.push({item:'PowerProtect DD capacity',qty:ceil(c.cap),unit:'TB usable',note:'Termasuk DD Boost; Retention Lock Compliance perlu diaktifkan'});
+      if(c.cls.m365) L.push({item:'PowerProtect Backup Service – M365',qty:c.cls.m365,unit:'user',note:'Per user'});
+      return L;},
+    notes:['Gunakan Retention Lock Compliance mode (bukan Governance) untuk immutability penuh.','DD Boost mendistribusikan dedup ke sisi sumber sehingga mengurangi trafik jaringan.','Jaga utilisasi DD di bawah 80–85% agar cleaning (GC) berjalan normal.','Cyber Recovery vault + CyberSense untuk salinan air-gapped.']},
+
+  druva:{name:'Druva Data Security Cloud (SaaS)',short:'Druva',m365Saas:true,arch:'100% SaaS di AWS; tanpa server/storage backup on-prem, immutable & air-gapped secara default.',
+    gain:20,buffer:0,
+    nT:[T('drs','Druva Cloud (retensi standar)','forever','dedup')],
+    iT:[T('dri','Druva Cloud (immutable, air-gapped)','forever','lock')],
+    hw:{proxyMBps:['Throughput per backup proxy (MB/s)',200]},
+    resources(c){const R=[];
+      if(c.cls.vm>0){const q=max(1,ceil(c.mbps/c.hw.proxyMBps));R.push({role:'Druva backup proxy (VMware/Hyper-V)',qty:q,vcpu:4,ram:8,disk:'OS 60 GB',note:'Virtual appliance di hypervisor'});}
+      if(c.cls.server+c.cls.db+c.cls.app>0) R.push({role:'Druva agent (server fisik/DB)',qty:c.cls.server+c.cls.db+c.cls.app,storage:true,disk:'Agent',note:'Terpasang di masing-masing server'});
+      R.push({role:'Druva CloudCache (opsional, restore cepat)',qty:1,vcpu:8,ram:32,disk:fmt(c.inc*7)+' cache',note:'Menyimpan ±7 hari data lokal',opt:true});
+      R.push({role:'Penyimpanan cloud Druva',qty:1,storage:true,disk:fmt(c.capRaw)+' terpakai',note:'Elastis; tidak perlu buffer'});
+      return R;},
+    license(c){const L=[];
+      L.push({item:'Druva Data Security Cloud (credits)',qty:ceil(c.capRaw),unit:'TB terpakai',note:'Model konsumsi berbasis storage setelah dedup'});
+      if(c.cls.m365) L.push({item:'Druva for Microsoft 365',qty:c.cls.m365,unit:'user',note:'Per user'});
+      return L;},
+    notes:['Data immutable dan terisolasi dari jaringan pelanggan secara default.','Kebutuhan bandwidth internet untuk seeding perlu dihitung (atau gunakan seeding offline).','Biaya mengikuti storage terpakai setelah dedup, jadi retensi panjang berdampak langsung ke biaya.','CloudCache disarankan untuk RTO cepat di site.']},
+
+  hycu:{name:'HYCU R-Cloud',short:'HYCU',arch:'Agentless, terintegrasi native dengan Nutanix/VMware; target NFS/SMB/S3.',
+    gain:0,buffer:20,
+    nT:[T('hnfs','NFS/SMB atau Nutanix Objects','forever','dedup')],
+    iT:[T('hs3','S3 Object Lock (Nutanix Objects / cloud)','forever','object')],
+    hw:{ctrlMBps:['Throughput per backup controller (MB/s)',300]},
+    resources(c){const R=[];
+      const big=c.objects>500;
+      R.push({role:'HYCU instance (controller utama)',qty:1,vcpu:big?8:4,ram:big?16:8,disk:'OS 32 GB + data 200 GB',note:big?'> 500 VM':'≤ 500 VM'});
+      const q=max(0,ceil(c.mbps/c.hw.ctrlMBps)-1);
+      if(q>0) R.push({role:'HYCU backup controller tambahan',qty:q,vcpu:4,ram:8,disk:'OS 32 GB',note:'Menambah throughput paralel'});
+      R.push({role:c.target.id==='hs3'?'Target S3 (Object Lock)':'Target NFS/SMB',qty:1,storage:true,disk:fmt(c.cap)+' usable',note:'Storage target terpisah'});
+      return R;},
+    license(c){const L=[];
+      L.push({item:'HYCU (VM/instance)',qty:c.cls.vm+c.cls.server+c.cls.db+c.cls.app,unit:'instance',note:'Per VM/server/DB terproteksi'});
+      if(c.tb.nas) L.push({item:'HYCU file/NAS',qty:ceil(c.tb.nas),unit:'TB',note:'Per TB front-end'});
+      if(c.cls.m365) L.push({item:'HYCU for Microsoft 365',qty:c.cls.m365,unit:'user',note:'Per user'});
+      if(c.cls.k8s) L.push({item:'HYCU for Kubernetes',qty:c.cls.k8s,unit:'worker node',note:'Per node'});
+      return L;},
+    notes:['Tidak ada dedup global; efisiensi bergantung pada kompresi dan target storage.','Gunakan Nutanix Objects/cloud S3 dengan Object Lock untuk immutability.','Integrasi native Nutanix (snapshot + changed region tracking).']},
+
+  ibm:{name:'IBM Storage Protect (Storage Defender)',short:'IBM',arch:'Server Storage Protect (DB2) dengan directory container pool inline dedup; sizing mengikuti IBM Blueprint.',
+    gain:25,buffer:20,
+    nT:[T('ispc','Directory container pool (inline dedup)','forever','dedup')],
+    iT:[T('ispi','Container pool + cloud tier immutable (Object Lock)','forever','lock')],
+    hw:{dmMBps:['Throughput per data mover (MB/s)',500]},
+    resources(c){const R=[];
+      const dI=c.inc;
+      const bp=[{n:'Small',ing:10,cap:180,c:12,r:64},{n:'Medium',ing:30,cap:800,c:20,r:192},{n:'Large',ing:100,cap:4000,c:44,r:384}];
+      let t=bp.find(b=>dI<=b.ing&&c.cap<=b.cap),q=1; if(!t){t=bp[2];q=max(ceil(dI/100),ceil(c.cap/4000));}
+      R.push({role:`Storage Protect server (Blueprint ${t.n})`,qty:q,vcpu:t.c,ram:t.r,disk:'DB2 + active log di SSD; container pool '+fmt(c.cap/q),note:`Ingest ±${dI.toFixed(1)} TB/hari`});
+      R.push({role:'Operations Center',qty:1,vcpu:4,ram:16,disk:'100 GB',note:'Bisa di server yang sama untuk Small',opt:true});
+      if(c.cls.vm>0){const q2=max(1,ceil(c.mbps/c.hw.dmMBps));R.push({role:'Data mover (Virtual Environments)',qty:q2,vcpu:4,ram:16,disk:'OS 60 GB',note:'Per vCenter/Hyper-V cluster'});}
+      return R;},
+    license(c){const L=[];
+      L.push({item:'IBM Storage Protect Suite – Front End',qty:ceil(c.fetb),unit:'FETB',note:'Alternatif: lisensi back-end managed TB'});
+      if(c.cls.m365) L.push({item:'IBM Storage Defender Data Protect – M365',qty:c.cls.m365,unit:'user',note:'Per user'});
+      return L;},
+    notes:['Ikuti IBM Storage Protect Blueprint untuk sizing server, DB2, dan disk.','DB2 & active log wajib di SSD.','Immutability via cloud tier Object Lock atau IBM FlashSystem Safeguarded Copy.','Pertimbangkan IBM Storage Defender untuk deteksi anomali.']}
+};
+
+/* ================= STATE ================= */
+const $=id=>document.getElementById(id);
+const STORE='brc-state-v2';
+const GKEYS=['growth','years','buffer','model','win','fullWin','nMethod','iMethod','immut','gain','basis'];
+let rows=[],uid=0,vendor='veeam',hwState={},targetSel={};
+function hwDefaults(vk){const o={};for(const[k,[,v]] of Object.entries(VENDORS[vk].hw))o[k]=v;return o;}
+function hw(vk){return hwState[vk]||(hwState[vk]=hwDefaults(vk));}
+function newRow(type='vmware',size=10,count){const d=WORKLOADS[type];return {id:++uid,type,size,count:count??d.cnt,change:d.change,red:d.red,log:d.log,ret:d.ret,w:d.w,m:d.m,y:d.y};}
+function defaults(){rows=[newRow('vmware',20,200),newRow('mssql',5,10),newRow('file',10,2),newRow('m365',3,500)];}
 
 function load(){
   try{const s=JSON.parse(localStorage.getItem(STORE)||'null');
-    if(s&&Array.isArray(s.rows)&&s.rows.length){rows=s.rows.map(r=>({...r,id:++uid}));
-      for(const k of ['growth','years','buffer','model','nRepo','nMethod','iRepo','iMethod','immut']) if(s.g&&s.g[k]!=null) $(k).value=s.g[k];
-      return;}
+    if(s&&Array.isArray(s.rows)&&s.rows.length){
+      rows=s.rows.map(r=>({...r,id:++uid}));vendor=VENDORS[s.vendor]?s.vendor:'veeam';hwState=s.hw||{};targetSel=s.targets||{};
+      return s.g||null;}
   }catch(e){}
-  defaults();
+  defaults();return null;
 }
 function save(){
-  try{const g={};for(const k of ['growth','years','buffer','model','nRepo','nMethod','iRepo','iMethod','immut'])g[k]=$(k).value;
-    localStorage.setItem(STORE,JSON.stringify({rows,g}));}catch(e){}
+  try{const g={};for(const k of GKEYS)g[k]=$(k).value;targetSel[vendor]={n:$('nTarget').value,i:$('iTarget').value};
+    localStorage.setItem(STORE,JSON.stringify({rows,vendor,hw:hwState,targets:targetSel,g}));}catch(e){}
 }
 
+/* ================= VENDOR UI ================= */
+$('vendor').innerHTML=Object.entries(VENDORS).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join('');
+function applyVendor(vk,resetDefaults){
+  vendor=vk;const V=VENDORS[vk];$('vendor').value=vk;
+  $('vendorDesc').textContent=V.arch;$('vendorShort').textContent='· '+V.short;
+  $('nTarget').innerHTML=V.nT.map(t=>`<option value="${t.id}">${t.label}</option>`).join('');
+  $('iTarget').innerHTML=V.iT.map(t=>`<option value="${t.id}">${t.label}</option>`).join('');
+  const ts=targetSel[vk];if(ts){if(V.nT.some(t=>t.id===ts.n))$('nTarget').value=ts.n;if(V.iT.some(t=>t.id===ts.i))$('iTarget').value=ts.i;}
+  if(resetDefaults){$('gain').value=V.gain;$('buffer').value=V.buffer;}
+  renderHw();
+}
+function renderHw(){
+  const V=VENDORS[vendor],h=hw(vendor);
+  $('hwWrap').innerHTML=`<h3>Asumsi sizing ${V.short}</h3><div class="grid g-wide">${Object.entries(V.hw).map(([k,[l]])=>`<div><label>${l}</label><input data-hw="${k}" type="number" min="0" step="any" value="${h[k]}"></div>`).join('')}</div>`;
+}
+$('hwWrap').addEventListener('input',e=>{const k=e.target.dataset.hw;if(!k)return;hw(vendor)[k]=parseFloat(e.target.value)||0;update();});
+$('vendor').addEventListener('change',e=>{applyVendor(e.target.value,true);update();});
+
+/* ================= WORKLOAD UI ================= */
 function renderRows(){
   const opts=Object.entries(WORKLOADS).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join('');
-  $('rows').innerHTML=rows.map(r=>{
-    const d=WORKLOADS[r.type];
+  $('rows').innerHTML=rows.map(r=>{const d=WORKLOADS[r.type];
     return `<div class="row-card" data-id="${r.id}">
       <div class="row-head">
         <div class="f-type"><label>Tipe workload</label><select data-k="type">${opts}</select></div>
         <div class="f-size"><label>Ukuran sumber (TB)</label><input data-k="size" type="number" min="0" step="0.1" value="${r.size}"></div>
+        <div class="f-size"><label>Jumlah (${d.unit})</label><input data-k="count" type="number" min="0" step="1" value="${r.count}"></div>
         <button class="icon" data-del title="Hapus workload" aria-label="Hapus workload">✕</button>
       </div>
       <div class="grid g-auto">${FIELDS.map(([k,l,s])=>`<div><label>${l}</label><input data-k="${k}" type="number" min="0" step="${s}" value="${r[k]}"></div>`).join('')}</div>
@@ -240,11 +504,10 @@ function renderRows(){
     </div>`;}).join('');
   rows.forEach(r=>{$('rows').querySelector(`[data-id="${r.id}"] select[data-k="type"]`).value=r.type;});
 }
-
 $('rows').addEventListener('input',e=>{
   const card=e.target.closest('.row-card');if(!card)return;
   const r=rows.find(x=>x.id==card.dataset.id);const k=e.target.dataset.k;if(!k)return;
-  if(k==='type'){const keep=r.size;Object.assign(r,newRow(e.target.value,keep),{id:r.id});renderRows();}
+  if(k==='type'){Object.assign(r,newRow(e.target.value,r.size),{id:r.id});renderRows();}
   else r[k]=parseFloat(e.target.value)||0;
   update();
 });
@@ -254,80 +517,107 @@ $('rows').addEventListener('click',e=>{
 });
 $('add').onclick=()=>{rows.push(newRow('custom',5));renderRows();update();};
 $('reset').onclick=()=>{try{localStorage.removeItem(STORE)}catch(e){};location.reload();};
-for(const k of ['growth','years','buffer','model','nRepo','nMethod','iRepo','iMethod','immut'])$(k).addEventListener('input',update);
+for(const k of GKEYS.concat(['nTarget','iTarget']))$(k).addEventListener('input',update);
 
-/* ---------- core calculation ---------- */
+/* ================= CORE CAPACITY ================= */
 function calcRow(r,year,sc,growth){
   const S=r.size*Math.pow(1+growth,year);
-  const red=Math.min(Math.max(r.red,0),99)/100, d=Math.min(Math.max(r.change,0),100)/100;
-  const F=S*(1-red), I=F*d, L=S*(r.log/100)*(1-red);
-  const ret=Math.max(1,Math.round(r.ret));
-  const fastClone=['refs','xfs','hardened'].includes(sc.repo);
-  const object=sc.repo==='object';
-  let method=sc.method;
-  if(object) method='ffi';                       // object storage = forever incremental (per-block)
-  if(sc.repo==='hardened'&&method==='ffi') method='synth'; // hardened repo wajib periodic full
+  if(sc.m365Saas&&WORKLOADS[r.type].cls==='m365') return {S:0,F:0,I:0,P:0,short:0,gfs:0,logs:0,total:0,saas:true};
+  const red=min(max(r.red,0),99)/100, d=min(max(r.change,0),100)/100, g=min(max(sc.gain,0),90)/100;
+  const F=S*(1-red)*(1-g), Fc=S*(1-red)*(1-g/2), I=Fc*d, L=S*(r.log/100)*(1-red)*(1-g/2);
+  const ret=max(1,Math.round(r.ret)), im=sc.immut, t=sc.target;
+  const forever=t.mode==='forever';
+  let method=forever?'ffi':sc.method;
+  if(t.rule==='hardened'&&method==='ffi')method='synth';
   let P;
-  if(!sc.immutable) P = method==='ffi' ? ret+1 : ret+6;
-  else if(object) P = Math.max(ret,sc.immut)+10;
-  else P = Math.max(ret,sc.immut)+7;
-  let shortT;
-  if(method==='ffi'){shortT=F+(P-1)*I;}
-  else{
-    const K=Math.ceil(P/7);
-    shortT=(method==='synth'&&fastClone)
-      ? F+(P-1)*I+(K-1)*F*0.01   // synthetic full Fast Clone ≈ metadata saja
-      : K*F+(P-K)*I;             // full ditulis penuh
+  switch(t.rule){
+    case 'chain':P=method==='ffi'?ret+1:ret+6;break;
+    case 'hardened':P=max(ret,im)+7;break;
+    case 'object':P=max(ret,im)+10;break;
+    case 'lock':P=max(ret,im)+1;break;
+    case 'worm2x':P=2*max(ret,im);break;
+    default:P=ret+1;
   }
-  const spaceEff=object||(fastClone&&method!=='active');
-  // blok unik yang berubah selama n hari: hotspot (sublinear, √n) atau acak (n)
-  const u=n=>F*(1-Math.pow(1-d, sc.model==='random'?n:Math.sqrt(n)));
-  // umur (hari) restore point GFS yang berada di luar jendela harian
-  const gfsAges=new Set();
-  for(let k=1;k<=Math.round(r.w);k++)gfsAges.add(7*k);
-  for(let k=1;k<=Math.round(r.m);k++)gfsAges.add(30*k);
-  for(let k=1;k<=Math.round(r.y);k++)gfsAges.add(365*k);
-  const extra=[...gfsAges].filter(a=>a>P-1).sort((a,b)=>a-b);
-  let gfs;
-  if(spaceEff){
-    // GFS via Fast Clone / object: tiap titik hanya menyimpan blok unik terhadap titik sebelumnya
-    let prev=P-1;gfs=0;
-    for(const a of extra){gfs+=u(a-prev);prev=a;}
-  } else gfs=extra.length*F;   // tiap GFS = full penuh
+  let shortT;const K=ceil(P/7);
+  if(method==='ffi') shortT=F+(P-1)*I;
+  else if(method==='synth'&&t.fastClone) shortT=F+(P-1)*I+(K-1)*F*0.01;
+  else shortT=K*F+(P-K)*I;
+  const spaceEff=forever||(t.fastClone&&method!=='active');
+  const u=n=>Fc*(1-Math.pow(1-d,sc.model==='random'?n:Math.sqrt(n)));
+  const ages=new Set();
+  for(let k=1;k<=Math.round(r.w);k++)ages.add(7*k);
+  for(let k=1;k<=Math.round(r.m);k++)ages.add(30*k);
+  for(let k=1;k<=Math.round(r.y);k++)ages.add(365*k);
+  const extra=[...ages].filter(a=>a>P-1).sort((a,b)=>a-b);
+  let gfs=0;
+  if(spaceEff){let prev=P-1;for(const a of extra){gfs+=u(a-prev);prev=a;}}
+  else gfs=extra.length*F;
   const logs=L*P;
-  return {S,F,I,P,method,short:shortT,gfs,logs,total:shortT+gfs+logs};
-}
-function scenarios(){
-  return {
-    n:{immutable:false,repo:$('nRepo').value,method:$('nMethod').value,immut:0,model:$('model').value},
-    i:{immutable:true,repo:$('iRepo').value,method:$('iMethod').value,immut:Math.max(1,parseFloat($('immut').value)||1),model:$('model').value}
-  };
+  return {S,F,I,P,short:shortT,gfs,logs,total:shortT+gfs+logs};
 }
 function totals(year,sc,growth){
   const per=rows.map(r=>calcRow(r,year,sc,growth));
   const sum=k=>per.reduce((a,b)=>a+b[k],0);
   return {per,S:sum('S'),short:sum('short'),gfs:sum('gfs'),logs:sum('logs'),total:sum('total')};
 }
-function fmt(tb){if(!isFinite(tb))return '-';if(Math.abs(tb)<1)return (tb*1024).toFixed(0)+' GB';return tb.toFixed(2)+' TB';}
-const REPO_LABEL={refs:'ReFS (Fast Clone)',xfs:'XFS reflink (Fast Clone)',ntfs:'NTFS/ext4',hardened:'Linux Hardened Repo',object:'Object Storage (Object Lock)'};
-const METHOD_LABEL={ffi:'Forever forward incremental',synth:'Weekly synthetic full',active:'Weekly active full'};
 
+/* compute a full sizing for a vendor + config */
+function compute(vk,cfg){
+  const V=VENDORS[vk];
+  const nT=V.nT.find(t=>t.id===cfg.nTarget)||V.nT[0], iT=V.iT.find(t=>t.id===cfg.iTarget)||V.iT[0];
+  const sn={immutable:false,target:nT,method:V.methods?cfg.nMethod:'synth',immut:0,model:cfg.model,gain:cfg.gain,m365Saas:!!V.m365Saas};
+  const si={immutable:true,target:iT,method:V.methods?cfg.iMethod:'synth',immut:cfg.immut,model:cfg.model,gain:cfg.gain,m365Saas:!!V.m365Saas};
+  const Y=cfg.years, tn=totals(Y,sn,cfg.growth), ti=totals(Y,si,cfg.growth);
+  const reqN=tn.total*(1+cfg.buf), reqI=ti.total*(1+cfg.buf);
+  const proj=[];for(let y=0;y<=Y;y++){const a=totals(y,sn,cfg.growth),b=totals(y,si,cfg.growth);proj.push({y,S:a.S,n:a.total*(1+cfg.buf),i:b.total*(1+cfg.buf)});}
+  // aggregates for resources & licences (projection year)
+  const gf=Math.pow(1+cfg.growth,Y);
+  const cls={vm:0,server:0,db:0,app:0,nas:0,m365:0,k8s:0};const tb={vm:0,server:0,db:0,app:0,nas:0,m365:0,k8s:0};
+  let incTB=0,fullTB=0;
+  rows.forEach(r=>{const c=WORKLOADS[r.type].cls;cls[c]+=Math.round(r.count||0);tb[c]+=r.size*gf;
+    if(c!=='m365'){incTB+=r.size*gf*(r.change+r.log)/100;fullTB+=r.size*gf;}});
+  const mbps=max(incTB*1048576/(cfg.win*3600), fullTB*1048576/(cfg.fullWin*3600));
+  const basisImm=cfg.basis!=='n';
+  const ctx={cls,tb,mbps,inc:incTB,fetb:fullTB,objects:cls.vm+cls.server+cls.db+cls.app+cls.nas+cls.k8s,
+    cap:basisImm?reqI:reqN,capRaw:basisImm?ti.total:tn.total,target:basisImm?iT:nT,hw:cfg.hw};
+  const res=V.resources(ctx);
+  ctx.nodes=res.filter(r=>r.appliance&&/node/i.test(r.role)).reduce((a,b)=>a+b.qty,0)||null;
+  const lic=V.license(ctx);
+  const srv=res.filter(r=>!r.opt&&!r.storage&&!r.appliance);
+  const infra={servers:srv.reduce((a,b)=>a+b.qty,0),vcpu:srv.reduce((a,b)=>a+b.qty*b.vcpu,0),ram:srv.reduce((a,b)=>a+b.qty*b.ram,0),
+    appliances:res.filter(r=>r.appliance).reduce((a,b)=>a+b.qty,0),applianceLabel:(res.find(r=>r.appliance)||{}).role};
+  return {V,nT,iT,tn,ti,reqN,reqI,proj,ctx,res,lic,infra};
+}
+function readCfg(){
+  return {growth:(parseFloat($('growth').value)||0)/100,years:parseInt($('years').value),buf:(parseFloat($('buffer').value)||0)/100,
+    model:$('model').value,win:max(1,parseFloat($('win').value)||8),fullWin:max(1,parseFloat($('fullWin').value)||48),
+    immut:max(1,parseFloat($('immut').value)||1),gain:parseFloat($('gain').value)||0,
+    nTarget:$('nTarget').value,iTarget:$('iTarget').value,nMethod:$('nMethod').value,iMethod:$('iMethod').value,
+    basis:$('basis').value,hw:hw(vendor)};
+}
+
+/* ================= FORMAT ================= */
+function fmt(tb){if(!isFinite(tb))return '-';if(Math.abs(tb)>=1000)return (tb/1024).toFixed(2)+' PB';if(Math.abs(tb)<1)return (tb*1024).toFixed(0)+' GB';return tb.toFixed(tb<100?2:1)+' TB';}
+const nf=n=>typeof n==='number'?n.toLocaleString('id-ID'):n;
+const METHOD_LABEL={ffi:'Forever forward incremental',synth:'Weekly synthetic full',active:'Weekly active full'};
+function infraText(inf){const p=[];if(inf.appliances)p.push(`${inf.appliances} ${/node/i.test(inf.applianceLabel||'')?'node':'appliance'}`);if(inf.servers)p.push(`${inf.servers} server`);return p.join(' + ')||'SaaS';}
+
+/* ================= RENDER ================= */
 function update(){
-  const growth=(parseFloat($('growth').value)||0)/100, years=parseInt($('years').value), buf=(parseFloat($('buffer').value)||0)/100;
-  const sc=scenarios();
-  $('iMethodWrap').style.display=sc.i.repo==='object'?'none':'';
-  const tn=totals(years,sc.n,growth), ti=totals(years,sc.i,growth);
-  const reqN=tn.total*(1+buf), reqI=ti.total*(1+buf);
+  const V=VENDORS[vendor];
+  $('nMethodWrap').style.display=V.methods?'':'none';
+  $('iMethodWrap').style.display=(V.methods&&V.iT.find(t=>t.id===$('iTarget').value)?.mode==='chain')?'':'none';
+  const cfg=readCfg();const R=compute(vendor,cfg);const {tn,ti,reqN,reqI,ctx}=R;const Y=cfg.years;
   const diff=reqN>0?(reqI/reqN-1)*100:0;
-  const card=(cls,badge,t,req,s,extra)=>{
-    const parts=[[t.short,'var(--accent)','Short-term'],[t.gfs,'#8a63d2','GFS'],[t.logs,'#d08a1e','Log DB'],[req-t.total,'var(--border)','Buffer']];
-    const tot=req||1;
-    return `<div class="card scen ${cls}">
-      <span class="badge ${cls}">${badge}</span>
-      <div class="hint" style="margin-top:6px">${REPO_LABEL[s.repo]} · ${s.repo==='object'?'Forever incremental':METHOD_LABEL[s.repo==='hardened'&&s.method==='ffi'?'synth':s.method]}${s.immutable?` · immutability ${s.immut} hari`:''}</div>
+
+  /* scenario cards */
+  const card=(cls,badge,t,req,tg,method,extra)=>{
+    const parts=[[t.short,'var(--s1)','Short-term'],[t.gfs,'var(--s3)','GFS'],[t.logs,'var(--s4)','Log DB'],[req-t.total,'var(--s-neutral)','Buffer']];const tot=req||1;
+    return `<div class="card scen ${cls}"><span class="badge ${cls}">${badge}</span>
+      <div class="hint" style="margin-top:6px">${tg.label}${V.methods&&tg.mode==='chain'?' · '+METHOD_LABEL[tg.rule==='hardened'&&method==='ffi'?'synth':method]:''}${cls?` · immutability ${cfg.immut} hari`:''}</div>
       <div class="big" style="margin-top:8px">${fmt(req)}</div>
-      <div class="hint">Kebutuhan kapasitas pada tahun ke-${years}${extra}</div>
-      <div class="bar" style="margin-top:12px">${parts.map(p=>`<i style="width:${Math.max(0,p[0]/tot*100)}%;background:${p[1]}"></i>`).join('')}</div>
+      <div class="hint">Kebutuhan kapasitas tahun ke-${Y}${extra}</div>
+      <div class="bar" style="margin-top:12px">${parts.map(p=>`<i title="${p[2]}: ${fmt(p[0])}" style="width:${max(0,p[0]/tot*100)}%;background:${p[1]}"></i>`).join('')}</div>
       <div class="legend">${parts.map(p=>`<span><b style="background:${p[1]}"></b>${p[2]}</span>`).join('')}</div>
       <div class="kv">
         <span>Total data sumber</span><span>${fmt(t.S)}</span>
@@ -335,60 +625,122 @@ function update(){
         <span>GFS (weekly/monthly/yearly)</span><span>${fmt(t.gfs)}</span>
         <span>Transaction / archive log</span><span>${fmt(t.logs)}</span>
         <span>Subtotal backup data</span><span>${fmt(t.total)}</span>
-        <span>Buffer ${Math.round(buf*100)}%</span><span>${fmt(req-t.total)}</span>
+        <span>Buffer ${Math.round(cfg.buf*100)}%</span><span>${fmt(req-t.total)}</span>
         <span>Rasio terhadap sumber</span><span>${t.S?(req/t.S).toFixed(2)+'×':'-'}</span>
-      </div></div>`;
-  };
-  $('summary').innerHTML=card('','Non-Immutable',tn,reqN,sc.n,'')+card('imm','Immutable',ti,reqI,sc.i,` · <b>${diff>=0?'+':''}${diff.toFixed(1)}%</b> vs non-immutable`);
+      </div></div>`;};
+  $('summary').innerHTML=card('','Non-Immutable',tn,reqN,R.nT,cfg.nMethod,'')+card('imm','Immutable',ti,reqI,R.iT,cfg.iMethod,` · <b>${diff>=0?'+':''}${diff.toFixed(1)}%</b> vs non-immutable`);
 
-  // projection
+  /* projection table */
   let ph='<thead><tr><th>Tahun</th><th>Data sumber</th><th>Non-Immutable</th><th>Immutable</th><th>Selisih</th></tr></thead><tbody>';
-  for(let y=0;y<=years;y++){
-    const a=totals(y,sc.n,growth),b=totals(y,sc.i,growth);
-    ph+=`<tr><td>${y===0?'Saat ini':'Tahun ke-'+y}</td><td>${fmt(a.S)}</td><td>${fmt(a.total*(1+buf))}</td><td>${fmt(b.total*(1+buf))}</td><td>${fmt((b.total-a.total)*(1+buf))}</td></tr>`;
-  }
+  R.proj.forEach(p=>{ph+=`<tr><td>${p.y===0?'Saat ini':'Tahun ke-'+p.y}</td><td>${fmt(p.S)}</td><td>${fmt(p.n)}</td><td>${fmt(p.i)}</td><td>${fmt(p.i-p.n)}</td></tr>`;});
   $('projTable').innerHTML=ph+'</tbody>';
 
-  // detail
-  $('detailYear').textContent=`(tahun ke-${years}, sebelum buffer)`;
-  let dh='<thead><tr><th>Workload</th><th>Sumber</th><th>Full (F)</th><th>Incr./hari</th><th>Restore point (N / I)</th><th>Non-Immutable</th><th>Immutable</th></tr></thead><tbody>';
-  rows.forEach((r,ix)=>{const a=tn.per[ix],b=ti.per[ix];
-    dh+=`<tr><td>${WORKLOADS[r.type].name}</td><td>${fmt(a.S)}</td><td>${fmt(a.F)}</td><td>${fmt(a.I)}</td><td>${a.P} / ${b.P}</td><td>${fmt(a.total)}</td><td>${fmt(b.total)}</td></tr>`;});
-  dh+=`</tbody><tfoot><tr><td>Total</td><td>${fmt(tn.S)}</td><td></td><td></td><td></td><td>${fmt(tn.total)}</td><td>${fmt(ti.total)}</td></tr></tfoot>`;
+  /* detail */
+  $('detailYear').textContent=`(tahun ke-${Y}, sebelum buffer)`;
+  let dh='<thead><tr><th>Workload</th><th>Jumlah</th><th>Sumber</th><th>Full (F)</th><th>Incr./hari</th><th>Restore point (N / I)</th><th>Non-Immutable</th><th>Immutable</th></tr></thead><tbody>';
+  rows.forEach((r,ix)=>{const a=tn.per[ix],b=ti.per[ix],w=WORKLOADS[r.type];
+    dh+=a.saas?`<tr><td>${w.name}</td><td>${nf(r.count)} ${w.unit}</td><td colspan="6" class="hint">Diproteksi via SaaS ${V.short}; kapasitas di cloud vendor, tidak masuk repository on-prem</td></tr>`
+      :`<tr><td>${w.name}</td><td>${nf(r.count)} ${w.unit}</td><td>${fmt(a.S)}</td><td>${fmt(a.F)}</td><td>${fmt(a.I)}</td><td>${a.P} / ${b.P}</td><td>${fmt(a.total)}</td><td>${fmt(b.total)}</td></tr>`;});
+  dh+=`</tbody><tfoot><tr><td>Total</td><td></td><td>${fmt(tn.S)}</td><td></td><td></td><td></td><td>${fmt(tn.total)}</td><td>${fmt(ti.total)}</td></tr></tfoot>`;
   $('detailTable').innerHTML=dh;
 
-  // notes
-  const n=[];const im=sc.i.immut;
-  const maxRet=Math.max(0,...rows.map(r=>r.ret));
-  if(im<7) n.push(['warn','Periode immutability di bawah 7 hari (minimum Veeam Hardened Repository). Disarankan 14–30 hari agar ransomware yang dorman tetap tertangani.']);
-  if(im>maxRet) n.push(['warn',`Immutability (${im} hari) lebih panjang dari retensi harian terpanjang (${maxRet} hari): restore point akan tertahan lebih lama dan menambah kapasitas.`]);
-  if(sc.i.repo==='hardened'){n.push(['','Hardened Repository mewajibkan forward incremental dengan periodic (synthetic/active) full; forever forward incremental & reverse incremental tidak didukung.']);
-    n.push(['','Gunakan XFS dengan reflink (Fast Clone) agar synthetic full & GFS hemat ruang. Akses SSH dinonaktifkan, single-use credential, dan server tidak join domain.']);}
-  if(sc.i.repo==='object'){n.push(['','Object storage: Veeam menambahkan block generation hingga 10 hari di atas periode immutability (sudah dihitung).']);
-    n.push(['','Pastikan bucket dibuat dengan Object Lock + versioning. Perhitungkan biaya API/egress untuk restore.']);}
-  if(sc.n.repo==='ntfs') n.push(['warn','Repo tanpa Fast Clone menyimpan setiap synthetic full & GFS sebagai full penuh — kapasitas jauh lebih besar. Pertimbangkan ReFS/XFS.']);
-  if(sc.n.method==='active'||sc.i.method==='active') n.push(['','Active full tidak memanfaatkan Fast Clone (data ditulis ulang). Gunakan synthetic full kecuali ada kebutuhan khusus integritas/performa chain.']);
-  if(rows.some(r=>r.red<30)) n.push(['','Ada workload dengan data reduction rendah (data terenkripsi/terkompresi). Pastikan angka ini sesuai kondisi riil.']);
-  n.push(['','Terapkan aturan 3-2-1-1-0: 3 salinan, 2 media, 1 offsite, 1 immutable/air-gapped, 0 error (SureBackup / verifikasi restore).']);
-  n.push(['','Siapkan kapasitas untuk backup copy/offsite secara terpisah — kalkulator ini menghitung satu repository per skenario.']);
-  n.push(['','Monitor penggunaan ≥ 80% dan rencanakan ekspansi sebelum tahun proyeksi berakhir; pada repository immutable data tidak bisa dihapus manual untuk membebaskan ruang.']);
+  /* resources */
+  const basisLbl=cfg.basis==='n'?'Non-Immutable':'Immutable';
+  $('resSub').textContent=`· ${V.short} · basis ${basisLbl}, tahun ke-${Y}`;
+  let rh='<thead><tr><th class="l">Komponen</th><th>Qty</th><th>vCPU / unit</th><th>RAM / unit (GB)</th><th class="l">Storage / disk</th><th class="l">Catatan</th></tr></thead><tbody>';
+  R.res.forEach(x=>{const nonSrv=x.storage||x.appliance;
+    rh+=`<tr class="${x.opt?'opt':''}"><td class="l">${x.role}${x.opt?' <span class="badge warn">opsional</span>':''}</td><td>${nf(x.qty)}</td><td>${nonSrv?'–':x.vcpu}</td><td>${nonSrv?'–':x.ram}</td><td class="l">${x.disk||''}</td><td class="l hint">${x.note||''}</td></tr>`;});
+  rh+=`</tbody><tfoot><tr><td class="l">Total server (tanpa opsional)</td><td>${R.infra.servers}</td><td>${R.infra.vcpu} vCPU</td><td>${R.infra.ram} GB</td><td class="l">${R.infra.appliances?R.infra.appliances+' appliance/node':''}</td><td></td></tr></tfoot>`;
+  $('resTable').innerHTML=rh;
+  $('resHint').textContent=`Throughput dibutuhkan ±${Math.round(ctx.mbps).toLocaleString('id-ID')} MB/s (perubahan harian ${fmt(ctx.inc)} dalam ${cfg.win} jam; full ${fmt(ctx.fetb)} dalam ${cfg.fullWin} jam). vCPU/RAM sudah termasuk OS; sesuaikan dengan kebijakan virtualisasi/hardware.`;
+
+  /* licences */
+  $('licSub').textContent=`· ${V.short} · tahun ke-${Y}`;
+  let lh='<thead><tr><th class="l">Item lisensi</th><th>Qty</th><th class="l">Metrik</th><th class="l">Catatan</th></tr></thead><tbody>';
+  R.lic.forEach(l=>{lh+=`<tr><td class="l">${l.item}</td><td>${nf(l.qty)}</td><td class="l">${l.unit}</td><td class="l hint">${l.note}</td></tr>`;});
+  $('licTable').innerHTML=lh+'</tbody>';
+
+  /* notes */
+  const n=[];const im=cfg.immut;const maxRet=max(0,...rows.map(r=>r.ret));
+  if(im<7) n.push(['warn','Periode immutability di bawah 7 hari. Disarankan 14–30 hari agar ransomware yang dorman tetap tertangani.']);
+  if(im>maxRet) n.push(['warn',`Immutability (${im} hari) lebih panjang dari retensi harian terpanjang (${maxRet} hari), sehingga restore point tertahan lebih lama dan menambah kapasitas.`]);
+  if(R.iT.rule==='object') n.push(['','Object storage: block generation menambah hingga 10 hari di atas periode immutability (sudah dihitung).']);
+  if(R.iT.rule==='worm2x') n.push(['warn','Commvault cloud WORM: data terkunci ±2× retensi karena DDB di-seal berkala. Kapasitas immutable jauh lebih besar.']);
+  if(R.nT.id==='ntfs') n.push(['warn','Repo tanpa Fast Clone menyimpan setiap synthetic full & GFS sebagai full penuh. Pertimbangkan ReFS/XFS.']);
+  if(V.methods&&(cfg.nMethod==='active'||cfg.iMethod==='active')) n.push(['','Active full tidak memanfaatkan Fast Clone; gunakan synthetic full kecuali ada kebutuhan khusus.']);
+  if(rows.some(r=>r.red<30)) n.push(['','Ada workload dengan data reduction rendah (terenkripsi/terkompresi). Pastikan sesuai kondisi riil.']);
+  V.notes.forEach(t=>n.push(['',t]));
+  n.push(['','Terapkan 3-2-1-1-0: 3 salinan, 2 media, 1 offsite, 1 immutable/air-gapped, 0 error. Salinan offsite perlu dihitung terpisah.']);
   $('notes').innerHTML=n.map(([c,t])=>`<li class="${c}">${t}</li>`).join('');
+
+  renderExec(R,cfg,diff);
   save();
 }
 
+function renderExec(R,cfg,diff){
+  const {V,tn,ti,reqN,reqI,ctx,lic,infra}=R;const Y=cfg.years;const now=R.proj[0];
+  $('execSub').textContent=`${V.name} · proyeksi ${Y} tahun · ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}`;
+  const main=lic[0];
+  const tiles=[
+    ['Data terproteksi',fmt(ctx.fetb+ctx.tb.m365),`Saat ini ${fmt(rows.reduce((a,r)=>a+r.size,0))} · ${rows.length} workload · ${nf(ctx.objects)} objek${ctx.cls.m365?` + ${nf(ctx.cls.m365)} user M365`:''}`],
+    ['Kapasitas Immutable (disarankan)',fmt(reqI),`Tahun ke-${Y}, termasuk buffer ${Math.round(cfg.buf*100)}% · ${R.iT.label}`],
+    ['Kapasitas Non-Immutable',fmt(reqN),`Immutable ${diff>=0?'+':''}${diff.toFixed(1)}% (${fmt(reqI-reqN)}) dibanding non-immutable`],
+    ['Infrastruktur backup',infraText(infra),infra.servers?`${nf(infra.vcpu)} vCPU · ${nf(infra.ram)} GB RAM (server)`:'Tanpa server backup on-prem'],
+    ['Lisensi utama',`${nf(main.qty)} ${main.unit}`,main.item],
+    ['Throughput dibutuhkan',`${Math.round(ctx.mbps).toLocaleString('id-ID')} MB/s`,`Window harian ${cfg.win} jam · full ${cfg.fullWin} jam`]
+  ];
+  $('kpis').innerHTML=tiles.map(t=>`<div class="kpi"><h3>${t[0]}</h3><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join('');
+  const ratio=tn.S?(reqI/tn.S).toFixed(1):'-';
+  $('narr').innerHTML=`Dengan <b>${V.name}</b>, perlindungan ${fmt(ctx.fetb+ctx.tb.m365)} data (tahun ke-${Y}, pertumbuhan ${Math.round(cfg.growth*100)}%/tahun) membutuhkan repository <b>immutable ${fmt(reqI)}</b> (≈${ratio}× data sumber) dengan periode immutability ${cfg.immut} hari, atau ${fmt(reqN)} tanpa immutability. Infrastruktur yang dibutuhkan: <b>${infraText(infra)}</b>${infra.servers?` (${nf(infra.vcpu)} vCPU, ${nf(infra.ram)} GB RAM)`:''}, dengan lisensi utama <b>${nf(main.qty)} ${main.unit}</b>. Rekomendasi: gunakan skenario immutable sebagai salinan utama dan tambahkan salinan offsite/air-gapped untuk memenuhi 3-2-1-1-0.`;
+
+  /* projection chart */
+  const mx=max(...R.proj.map(p=>max(p.n,p.i)),1e-9);
+  $('chart').innerHTML=R.proj.map((p,ix)=>{
+    return `<div class="cg"><div class="cb">
+      <i data-tip="${p.y===0?'Saat ini':'Tahun ke-'+p.y} · Non-Immutable: ${fmt(p.n)}" style="height:${p.n/mx*88}%;background:var(--s1)"></i>
+      <i data-tip="${p.y===0?'Saat ini':'Tahun ke-'+p.y} · Immutable: ${fmt(p.i)}" style="height:${p.i/mx*88}%;background:var(--s2)"></i>
+    </div><span>${p.y===0?'Saat ini':'Th-'+p.y}</span></div>`;}).join('');
+
+  const lp=R.proj[R.proj.length-1];
+  $('chartLegend').innerHTML=`<span><b style="background:var(--s1)"></b>Non-Immutable · ${fmt(lp.n)}</span><span><b style="background:var(--s2)"></b>Immutable · ${fmt(lp.i)}</span><span>(tahun ke-${Y})</span>`;
+
+  /* vendor comparison */
+  const base=readCfg();
+  let ch='<thead><tr><th>Vendor</th><th>Immutable</th><th>Non-Imm.</th><th class="l">Infrastruktur</th><th class="l">Lisensi utama</th></tr></thead><tbody>';
+  for(const vk of Object.keys(VENDORS)){const Vv=VENDORS[vk];
+    const c=vk===vendor?base:{...base,gain:Vv.gain,buf:Vv.buffer/100,nTarget:Vv.nT[0].id,iTarget:Vv.iT[0].id,nMethod:'synth',iMethod:'synth',hw:hw(vk)};
+    const r=compute(vk,c);const l=r.lic[0];
+    ch+=`<tr class="click ${vk===vendor?'sel':''}" data-v="${vk}"><td>${Vv.short}</td><td>${fmt(r.reqI)}</td><td>${fmt(r.reqN)}</td><td class="l">${infraText(r.infra)}</td><td class="l">${nf(l.qty)} ${l.unit}</td></tr>`;}
+  $('cmpTable').innerHTML=ch+'</tbody>';
+}
+$('cmpTable').addEventListener('click',e=>{const tr=e.target.closest('tr[data-v]');if(!tr||tr.dataset.v===vendor)return;applyVendor(tr.dataset.v,true);update();window.scrollTo({top:0,behavior:'smooth'});});
+
+/* tooltip for chart */
+const tip=$('tip');
+$('chart').addEventListener('mousemove',e=>{const t=e.target.closest('[data-tip]');if(!t){tip.style.display='none';return;}
+  tip.textContent=t.dataset.tip;tip.style.display='block';tip.style.left=min(e.clientX+12,innerWidth-tip.offsetWidth-8)+'px';tip.style.top=(e.clientY-34)+'px';});
+$('chart').addEventListener('mouseleave',()=>tip.style.display='none');
+
+/* ================= EXPORT ================= */
 $('csv').onclick=()=>{
-  const growth=(parseFloat($('growth').value)||0)/100, years=parseInt($('years').value), buf=(parseFloat($('buffer').value)||0)/100;const sc=scenarios();
-  const tn=totals(years,sc.n,growth),ti=totals(years,sc.i,growth);
-  const L=[['Workload','Sumber TB','Change %','Reduction %','Log %','Retensi','Weekly','Monthly','Yearly','Non-Immutable TB','Immutable TB']];
-  rows.forEach((r,i)=>L.push([WORKLOADS[r.type].name,tn.per[i].S.toFixed(2),r.change,r.red,r.log,r.ret,r.w,r.m,r.y,tn.per[i].total.toFixed(2),ti.per[i].total.toFixed(2)]));
-  L.push(['Subtotal','','','','','','','','',tn.total.toFixed(2),ti.total.toFixed(2)]);
-  L.push([`Total + buffer ${Math.round(buf*100)}% (tahun ke-${years})`,'','','','','','','','',(tn.total*(1+buf)).toFixed(2),(ti.total*(1+buf)).toFixed(2)]);
-  const csv=L.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='backup-sizing.csv';a.click();
+  const cfg=readCfg();const R=compute(vendor,cfg);const q=c=>`"${String(c).replace(/"/g,'""')}"`;
+  const L=[['Vendor',R.V.name],['Tahun proyeksi',cfg.years],[],['Workload','Jumlah','Sumber TB','Change %','Reduction %','Log %','Retensi','Weekly','Monthly','Yearly','Non-Immutable TB','Immutable TB']];
+  rows.forEach((r,i)=>L.push([WORKLOADS[r.type].name,r.count,R.tn.per[i].S.toFixed(2),r.change,r.red,r.log,r.ret,r.w,r.m,r.y,R.tn.per[i].total.toFixed(2),R.ti.per[i].total.toFixed(2)]));
+  L.push(['Total + buffer','','','','','','','','','',R.reqN.toFixed(2),R.reqI.toFixed(2)]);
+  L.push([],['Komponen','Qty','vCPU','RAM GB','Storage','Catatan']);
+  R.res.forEach(x=>L.push([x.role+(x.opt?' (opsional)':''),x.qty,x.vcpu??'',x.ram??'',x.disk||'',x.note||'']));
+  L.push([],['Lisensi','Qty','Metrik','Catatan']);
+  R.lic.forEach(l=>L.push([l.item,l.qty,l.unit,l.note]));
+  const csv=L.map(r=>r.map(q).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=`backup-sizing-${vendor}.csv`;a.click();
 };
 $('print').onclick=()=>window.print();
 
-load();renderRows();update();
+/* ================= INIT ================= */
+const g=load();
+applyVendor(vendor,!g);
+if(g) for(const k of GKEYS) if(g[k]!=null) $(k).value=g[k];
+renderRows();update();
 </script>
 </body>
 </html>
