@@ -101,6 +101,12 @@ tr.opt td{color:var(--muted)}
 .notes li{margin:4px 0}
 .notes li.warn{color:var(--warn)}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.hld{border-top:4px solid var(--s2)}
+.hld-diagram{min-width:920px}
+.hld-diagram svg{display:block;width:100%;height:auto}
+.hld-diagram text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.bom{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font-variant-numeric:tabular-nums;font-size:13px}
+.bom span:nth-child(odd){color:var(--muted)}
 details summary{cursor:pointer;font-weight:600}
 code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12px}
 @media (max-width:820px){.g2,.g3{grid-template-columns:1fr}.big{font-size:26px}}
@@ -141,6 +147,24 @@ code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12p
         <p class="hint">Memakai target & asumsi default tiap vendor. Klik baris untuk berpindah vendor.</p>
       </div>
     </div>
+  </div>
+
+  <!-- HLD / REFERENCE ARCHITECTURE -->
+  <div class="card hld section" id="hldCard">
+    <div class="exec-head">
+      <h2 id="hldTitle">High-Level Design</h2>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="hint" id="hldSub"></span>
+        <button class="ghost no-print" id="svgDl">Unduh diagram (SVG)</button>
+      </div>
+    </div>
+    <div class="scroll"><div id="hldDiagram" class="hld-diagram"></div></div>
+    <div class="grid g3 section">
+      <div><h3>Alur data</h3><ol class="notes" id="hldFlow"></ol></div>
+      <div><h3>Prinsip desain &amp; keamanan</h3><ul class="notes" id="hldPrin"></ul></div>
+      <div><h3>Ringkasan komponen</h3><div id="hldBom"></div></div>
+    </div>
+    <p class="hint">Diagram dibuat otomatis dari hasil sizing (basis mengikuti pilihan di bagian Resource Server Backup). Kotak putus-putus = layanan SaaS/cloud atau komponen yang disarankan tetapi belum di-size.</p>
   </div>
 
   <div class="grid g2 section">
@@ -674,6 +698,7 @@ function update(){
   $('notes').innerHTML=n.map(([c,t])=>`<li class="${c}">${t}</li>`).join('');
 
   renderExec(R,cfg,diff);
+  renderHLD(R,cfg);
   save();
 }
 
@@ -714,6 +739,135 @@ function renderExec(R,cfg,diff){
   $('cmpTable').innerHTML=ch+'</tbody>';
 }
 $('cmpTable').addEventListener('click',e=>{const tr=e.target.closest('tr[data-v]');if(!tr||tr.dataset.v===vendor)return;applyVendor(tr.dataset.v,true);update();window.scrollTo({top:0,behavior:'smooth'});});
+
+/* ================= HLD / REFERENCE ARCHITECTURE ================= */
+const HLD={
+  veeam:{offsite:'Backup copy job ke object storage offsite / Veeam Data Cloud Vault (immutable)',
+    principles:['VBR server di luar domain produksi (workgroup/domain manajemen terpisah) dengan MFA.','Hardened Repository di server fisik terpisah: SSH nonaktif, single-use credential.','Jaringan backup terdedikasi (VLAN) untuk trafik proxy ke repository.','SOBR: performance tier immutable + capacity tier ke object storage.']},
+  commvault:{offsite:'Auxiliary copy ke Commvault Cloud Air Gap Protect / cloud WORM',
+    principles:['CommServe dengan DR backup terjadwal ke lokasi terpisah; MFA & role-based access.','MediaAgent dengan DDB di NVMe dan index cache terpisah.','Satu storage pool dedup global untuk semua workload.','Aktifkan ransomware protection pada MediaAgent.']},
+  rubrik:{offsite:'Archive / replikasi ke Rubrik Cloud Vault atau cluster DR',moverNone:'Tanpa proxy terpisah: cluster menarik data via API hypervisor & Rubrik Backup Service',
+    principles:['Manajemen via Rubrik Security Cloud (SaaS) dengan MFA & SSO.','Retention Lock (compliance) pada SLA Domain kritikal.','Cluster menyatukan data mover dan storage; gunakan jaringan backup terdedikasi.','Replikasi ke cluster DR atau Cloud Vault untuk 3-2-1-1-0.']},
+  cohesity:{offsite:'Replikasi ke cluster DR atau FortKnox (vault terisolasi)',moverNone:'Tanpa proxy terpisah: cluster menarik data via API hypervisor / agent',
+    principles:['Manajemen via Helios dengan MFA & quorum approval untuk aksi kritikal.','DataLock (WORM) compliance pada policy kritikal.','Cluster N+1 dengan erasure coding; jaringan backup terdedikasi.','FortKnox atau replikasi ke cluster DR untuk salinan terisolasi.']},
+  dell:{offsite:'Replikasi MTree DD ke Cyber Recovery vault air-gapped / DD site DR',
+    principles:['PPDM di jaringan manajemen; integrasi vCenter & AD dengan akun least-privilege.','DD Boost dari engine/agent langsung ke DD (source-side dedup).','Retention Lock Compliance + dual authorization (security officer).','Cyber Recovery vault dengan air-gap otomatis & CyberSense.']},
+  druva:{offsite:'Salinan antar region AWS (opsional); data sudah terisolasi dari jaringan pelanggan',moverNone:'Agent terpasang di server; koneksi keluar HTTPS 443',
+    principles:['Control plane & storage di cloud: tidak ada infrastruktur backup yang bisa diserang dari LAN.','Proxy/agent hanya koneksi keluar (HTTPS 443).','Aktifkan MFA, SSO, dan data lock di konsol.','Hitung bandwidth internet untuk seeding & restore; CloudCache untuk RTO lokal.']},
+  hycu:{offsite:'Replikasi target ke cloud S3 / site DR (Object Lock)',
+    principles:['HYCU instance sebagai virtual appliance di cluster Nutanix/VMware.','Agentless dengan snapshot native hypervisor.','Target S3 dengan Object Lock untuk immutability.','Pisahkan target backup dari cluster produksi.']},
+  ibm:{offsite:'Node replication / storage pool protection ke server Storage Protect DR atau cloud tier',moverNone:'Backup-archive client & Data Protection agent mengirim data langsung ke server',
+    principles:['Ikuti IBM Blueprint: DB2 & log di SSD, container pool di storage terpisah.','Inline dedup + kompresi pada directory container pool.','Storage pool protection & node replication ke server DR.','Immutability via cloud tier Object Lock atau FlashSystem Safeguarded Copy.']}
+};
+function tierOf(x){const r=x.role;
+  if(/Cloud Vault|FortKnox|Cyber Recovery/i.test(r))return 'vault';
+  if(/M365|Microsoft 365/i.test(r))return 'm365';
+  if(/Backup & Replication|CommServe|Data Manager \(VM\)|HYCU instance|Storage Protect server|Operations Center|Veeam ONE|Helios|Security Cloud/i.test(r))return 'mgmt';
+  if(/proxy|access node|protection engine|Data mover|backup controller|agent|Gateway|CloudCache|Kasten/i.test(r))return 'mover';
+  return 'repo';}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function wrapText(s,n){const out=[];let line='';for(const w of String(s).split(/\s+/)){if((line+' '+w).trim().length>n&&line){out.push(line);line=w;}else line=(line+' '+w).trim();}if(line)out.push(line);return out;}
+function specOf(x){
+  if(x.appliance) return `${nf(x.qty)} × ${/node/i.test(x.role)?'node':'unit'} · ${x.disk||''}`;
+  if(x.storage) return x.disk||'';
+  return `${nf(x.qty)} × ${x.vcpu} vCPU / ${x.ram} GB RAM${x.diskShow&&x.disk?' · '+x.disk:''}`;}
+
+function renderHLD(R,cfg){
+  const {V,ctx}=R;const H=HLD[vendor]||{};const imm=cfg.basis!=='n';const tgt=imm?R.iT:R.nT;
+  $('hldTitle').textContent=`High-Level Design · ${V.name}`;
+  $('hldSub').textContent=`Reference architecture · basis ${imm?'Immutable':'Non-Immutable'} · tahun ke-${cfg.years}`;
+  const cols={mgmt:[],mover:[],repo:[],vault:[],m365:[]};
+  R.res.forEach(x=>{const t=tierOf(x);cols[t].push(t==='repo'?{...x,diskShow:true}:x);});
+  if(!cols.repo.length) cols.repo.push({role:tgt.label,storage:true,disk:fmt(ctx.cap)+' usable',synth:true});
+  if(!cols.mover.length&&H.moverNone) cols.mover.push({role:H.moverNone,storage:true,ghost:true});
+  cols.mover.push(...cols.m365);
+  if(!cols.vault.length) cols.vault.push({role:H.offsite||'Salinan offsite / air-gapped',storage:true,ghost:true,disk:'Disarankan (3-2-1-1-0); kapasitas dihitung terpisah'});
+
+  /* layout */
+  const W=1200,cw=222,gap=(W-40-4*cw)/3,X=[20,20+cw+gap,20+2*(cw+gap),20+3*(cw+gap)];
+  const parts=[];const LH=15;
+  const boxH=(item,w)=>{const t=wrapText(item.role,Math.floor(w/7.1));const s=wrapText(specOf(item),Math.floor(w/6.6));return 16+t.length*LH+(s[0]?s.length*14+4:0)+(item.opt||item.saas?16:0);};
+  const drawBox=(x,y,w,item,kind)=>{
+    const h=boxH(item,w);const t=wrapText(item.role,Math.floor(w/7.1));const s=wrapText(specOf(item),Math.floor(w/6.6));
+    const dashed=item.ghost||(item.storage&&/SaaS|cloud|Cloud/.test(item.role+item.disk));
+    const stroke=kind==='mgmt'?'var(--s1)':kind==='repo'?'var(--s2)':kind==='vault'?'var(--s3)':kind==='src'?'var(--border)':'var(--s4)';
+    let g=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="var(--surface)" stroke="${stroke}" stroke-width="${kind==='src'?1:1.6}"${dashed?' stroke-dasharray="5 4"':''}/>`;
+    g+=`<rect x="${x}" y="${y+8}" width="3" height="${h-16}" rx="1.5" fill="${stroke}"/>`;
+    let ty=y+8;
+    t.forEach(l=>{ty+=LH;g+=`<text x="${x+12}" y="${ty-3}" font-size="12.5" font-weight="600" fill="var(--text)">${esc(l)}</text>`;});
+    if(s[0]){ty+=4;s.forEach(l=>{ty+=14;g+=`<text x="${x+12}" y="${ty-3}" font-size="11.5" fill="var(--muted)">${esc(l)}</text>`;});}
+    if(item.opt){ty+=16;g+=`<text x="${x+12}" y="${ty-3}" font-size="11" fill="var(--warn)">opsional</text>`;}
+    parts.push(g);return h;};
+  /* management band */
+  const mg=cols.mgmt;const bandY=44;const bx0=X[1],bw=W-20-bx0;const mw=mg.length?min(cw,(bw-(mg.length-1)*12)/mg.length):cw;
+  const bandH=mg.length?max(...mg.map(m=>boxH(m,mw)))+28:0;
+  /* columns */
+  const top=bandY+bandH+(mg.length?58:20);
+  const srcItems=rows.map(r=>{const w=WORKLOADS[r.type];const saas=V.m365Saas&&w.cls==='m365';
+    return {role:w.name,storage:true,disk:`${nf(r.count)} ${w.unit} · ${fmt(r.size*Math.pow(1+cfg.growth,cfg.years))}${saas?' · via SaaS':''}`};});
+  const colH=list=>list.reduce((a,it)=>a+boxH(it,cw)+12,0)-12;
+  const heights=[colH(srcItems),colH(cols.mover),colH(cols.repo),colH(cols.vault)];
+  const contentH=max(...heights,80);
+  const Hsvg=top+contentH+56;
+  /* zones */
+  const zone=(x,w,label,dash)=>parts.push(`<rect x="${x}" y="${top-32}" width="${w}" height="${contentH+52}" rx="12" fill="var(--surface-2)" stroke="var(--border)"${dash?' stroke-dasharray="6 5"':''}/><text x="${x+12}" y="${top-14}" font-size="11" font-weight="700" letter-spacing=".04em" fill="var(--muted)">${label}</text>`);
+  zone(X[0]-10,cw+20,'PRODUKSI / SUMBER DATA');
+  zone(X[1]-10,X[2]+cw-X[1]+20,vendor==='druva'?'KONEKTOR ON-PREM · DRUVA CLOUD':'DATA CENTER UTAMA · INFRASTRUKTUR BACKUP');
+  zone(X[3]-10,cw+20,'OFFSITE / AIR-GAP',true);
+  if(mg.length){parts.push(`<rect x="${bx0-10}" y="${bandY-28}" width="${bw+20}" height="${bandH+20}" rx="12" fill="var(--surface-2)" stroke="var(--border)"/><text x="${bx0+2}" y="${bandY-10}" font-size="11" font-weight="700" letter-spacing=".04em" fill="var(--muted)">MANAJEMEN, KATALOG &amp; MONITORING</text>`);
+    mg.forEach((m,i)=>drawBox(bx0+i*(mw+12),bandY,mw,m,'mgmt'));}
+  /* column titles + boxes */
+  const titles=['Workload terproteksi','Data mover / proxy',`Target ${imm?'immutable':'non-immutable'} · ${fmt(ctx.cap)}`,'Salinan kedua'];
+  const lists=[srcItems,cols.mover,cols.repo,cols.vault],kinds=['src','mover','repo','vault'];
+  const mids=[];
+  lists.forEach((list,ci)=>{let y=top+(contentH-heights[ci])/2;const y0=y;
+    parts.push(`<text x="${X[ci]}" y="${top-38}" font-size="12" font-weight="700" fill="var(--text)" display="none">${esc(titles[ci])}</text>`);
+    list.forEach(it=>{y+=drawBox(X[ci],y,cw,it,kinds[ci])+12;});mids.push((y0+y-12)/2);});
+  /* arrows between columns */
+  const mid=top+contentH/2;
+  const arrow=(x1,x2,label,dash)=>{parts.push(`<line x1="${x1}" y1="${mid}" x2="${x2-4}" y2="${mid}" stroke="var(--muted)" stroke-width="2"${dash?' stroke-dasharray="6 4"':''} marker-end="url(#ah)"/>`);
+    if(label){const lw=label.length*6+14;parts.push(`<rect x="${(x1+x2)/2-lw/2}" y="${mid-24}" width="${lw}" height="18" rx="9" fill="var(--surface)" stroke="var(--border)"/><text x="${(x1+x2)/2}" y="${mid-11}" font-size="11" text-anchor="middle" fill="var(--text)">${esc(label)}</text>`);}};
+  arrow(X[0]+cw+2,X[1],`±${Math.round(ctx.mbps).toLocaleString('id-ID')} MB/s`);
+  arrow(X[1]+cw+2,X[2],imm?`lock ${cfg.immut} hari`:'tulis data');
+  arrow(X[2]+cw+2,X[3],'replikasi',true);
+  /* control lines from management */
+  if(mg.length){const yb=bandY+bandH-8;[X[1],X[2]].forEach(x=>parts.push(`<line x1="${x+cw/2}" y1="${yb}" x2="${x+cw/2}" y2="${top-34}" stroke="var(--s1)" stroke-width="1.5" stroke-dasharray="3 4" marker-end="url(#ahb)"/>`));
+    parts.push(`<text x="${X[1]+cw/2+8}" y="${(yb+top-34)/2+4}" font-size="11" fill="var(--muted)">orkestrasi &amp; katalog</text>`);}
+  /* legend */
+  const lg=[['var(--s1)','Manajemen'],['var(--s4)','Data mover'],['var(--s2)','Storage utama'],['var(--s3)','Offsite / vault']];
+  parts.push(lg.map((l,i)=>`<rect x="${20+i*150}" y="${Hsvg-24}" width="10" height="10" rx="2" fill="${l[0]}"/><text x="${36+i*150}" y="${Hsvg-15}" font-size="11.5" fill="var(--muted)">${l[1]}</text>`).join('')+
+    `<line x1="${640}" y1="${Hsvg-19}" x2="${672}" y2="${Hsvg-19}" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/><text x="${680}" y="${Hsvg-15}" font-size="11.5" fill="var(--muted)">SaaS / cloud / disarankan</text>`);
+  const defs=`<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--s1)"/></marker></defs>`;
+  $('hldDiagram').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hsvg}" role="img" aria-label="Reference architecture ${esc(V.name)}">${defs}${parts.join('')}</svg>`;
+
+  /* flow */
+  const names=l=>l.filter(x=>!x.opt&&!x.ghost).map(x=>x.role.replace(/\s*\(.*\)$/,'')).join(', ');
+  const totS=ctx.fetb+ctx.tb.m365;const f=[];
+  f.push(mg.length?`${names(mg)} menjadwalkan job, menyimpan katalog, dan memantau status backup.`:'Control plane dikelola vendor (SaaS).');
+  const mv=cols.mover.filter(x=>!/M365/.test(x.role));
+  f.push(mv.length&&!mv[0].ghost?`${names(mv)} membaca data dari ${rows.length} workload (${fmt(totS)}) dengan ±${Math.round(ctx.mbps).toLocaleString('id-ID')} MB/s dalam window ${cfg.win} jam.`:`${H.moverNone||'Data dibaca langsung dari sumber'}; ±${Math.round(ctx.mbps).toLocaleString('id-ID')} MB/s dalam window ${cfg.win} jam.`);
+  f.push(`Data dikompresi${cfg.gain>0?' & dedup global':''} lalu ditulis ke ${tgt.label} (${fmt(ctx.cap)}${imm?`, immutable ${cfg.immut} hari`:''}).`);
+  f.push(`${H.offsite||'Salinan offsite'} untuk memenuhi 3-2-1-1-0.`);
+  if(ctx.cls.m365){const m=cols.m365[0];f.push(`Microsoft 365 (${nf(ctx.cls.m365)} user) diproteksi via ${m?m.role.replace(/\s*\(.*\)$/,''):'layanan M365 vendor'}.`);}
+  $('hldFlow').innerHTML=f.map(t=>`<li>${esc(t)}</li>`).join('');
+  $('hldPrin').innerHTML=(H.principles||[]).map(t=>`<li>${esc(t)}</li>`).join('');
+  /* BOM summary */
+  const inf=R.infra;const b=[];
+  b.push(['Server (VM/fisik)',inf.servers?`${inf.servers} unit`:'–']);
+  if(inf.servers)b.push(['Total vCPU / RAM',`${nf(inf.vcpu)} / ${nf(inf.ram)} GB`]);
+  if(inf.appliances)b.push([inf.applianceLabel.replace(/\s*\(.*\)$/,''),`${inf.appliances} unit`]);
+  b.push([`Storage ${imm?'immutable':'non-immutable'}`,fmt(ctx.cap)]);
+  b.push(['Throughput',`${Math.round(ctx.mbps).toLocaleString('id-ID')} MB/s`]);
+  R.lic.slice(0,3).forEach(l=>b.push([l.item.replace(/\s*\(.*\)$/,''),`${nf(l.qty)} ${l.unit}`]));
+  $('hldBom').innerHTML=`<div class="bom">${b.map(r=>`<span>${esc(r[0])}</span><span>${esc(r[1])}</span>`).join('')}</div>`;
+}
+$('svgDl').onclick=()=>{
+  const cs=getComputedStyle(document.documentElement);
+  const svg=$('hldDiagram').innerHTML.replace(/var\((--[a-z0-9-]+)\)/g,(m,v)=>cs.getPropertyValue(v).trim()||'#888');
+  const bg=cs.getPropertyValue('--bg').trim();
+  const out=svg.replace(/^<svg([^>]*)>/,`<svg$1><rect width="100%" height="100%" fill="${bg}"/>`);
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'image/svg+xml'}));a.download=`hld-${vendor}.svg`;a.click();
+};
 
 /* tooltip for chart */
 const tip=$('tip');

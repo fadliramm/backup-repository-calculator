@@ -39,6 +39,16 @@ Asumsi hardware tiap vendor (throughput per task/node, kapasitas per node, minim
 
 Bagian paling atas berisi KPI (data terproteksi, kapasitas immutable/non-immutable, infrastruktur, lisensi utama, throughput), ringkasan naratif, grafik proyeksi per tahun, dan tabel perbandingan semua vendor dengan input yang sama.
 
+## High-Level Design / Reference Architecture
+
+Tepat di bawah Executive Summary ada diagram reference architecture untuk vendor yang dipilih. Diagram dibuat otomatis dari hasil sizing, sehingga ikut berubah saat vendor, target, basis sizing, atau workload diubah.
+
+- **Zona:** produksi/sumber data → data center utama (data mover + storage utama) → offsite/air-gap, dengan lapisan manajemen di atas.
+- **Isi kotak:** jumlah dan spesifikasi tiap komponen (vCPU/RAM, node, kapasitas), throughput, dan periode immutability.
+- **Kotak putus-putus:** layanan SaaS/cloud atau komponen yang disarankan tetapi belum di-size (misalnya salinan offsite).
+- **Pendukung:** alur data bernomor, prinsip desain & keamanan per vendor, dan ringkasan komponen.
+- Diagram bisa diunduh sebagai SVG.
+
 ## Default best practice per workload
 
 | Workload | Change/hari | Data reduction | Log/hari | Retensi harian | Weekly | Monthly | Yearly |
